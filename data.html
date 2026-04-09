@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sofia Maggiani</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap');
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: #000;
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- LOADING SCREEN --- */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .loader-none {
+            display: none !important;
+        }
+        .loader-content {
+            position: relative;
+            width: 12vw;
+            min-width: 120px;
+            aspect-ratio: 1/1;
+        }
+
+        .loader-content img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: auto;
+            opacity: 0;
+            animation: oneByOne 2s infinite; 
+        }
+
+        .loader-content img:nth-child(1) { animation-delay: 0s; }
+        .loader-content img:nth-child(2) { animation-delay: 0.33s; }
+        .loader-content img:nth-child(3) { animation-delay: 0.66s; }
+        .loader-content img:nth-child(4) { animation-delay: 1s; }
+        .loader-content img:nth-child(5) { animation-delay: 1.33s; }
+
+        @keyframes oneByOne {
+            0%, 15% { opacity: 1; transform: scale(1); }
+            16%, 100% { opacity: 0; transform: scale(1.05); }
+        }
+
+        .loader-hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* --- NAV BAR --- */
+        nav {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            padding: 40px 50px;
+            position: fixed;
+            top: 0; width: 100%;
+            z-index: 200;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            background-color: rgba(0, 0, 0, 0.85); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-left { justify-self: start; }
+        .nav-center { justify-self: center; }
+        .nav-right { justify-self: end; display: flex; gap: 20px; align-items: center; }
+
+        nav a { 
+            text-decoration: none; 
+            transition: 0.4s; 
+            color: rgba(255,255,255,0.4); 
+            position: relative; 
+            padding: 5px 0; 
+            font-weight: 400;
+        }
+
+        /* Stato attivo per far apparire la linea verde fissa */
+        nav a.active-link { 
+            color: #e0e0e0; 
+            font-weight: 600; 
+        }
+
+        nav a::after {
+            content: ''; 
+            position: absolute; 
+            width: 0; 
+            height: 1px;
+            bottom: 0; 
+            left: 0; 
+            background-color: #00ff66; 
+            transition: width 0.4s ease;
+        }
+
+        /* La linea si espande se il link è active o se ci passi sopra col mouse */
+        nav a.active-link::after, 
+        nav a:hover::after { 
+            width: 100%; 
+        }
+
+        .logo a { 
+            color: rgba(255, 255, 255, 0.4); 
+            font-weight: 600; 
+            letter-spacing: 3px; 
+        }
+        .lang-btn:hover { color: #e0e0e0; }
+
+         /* LANGUAGE SWITCHER UI */
+        .lang-switch {
+            display: flex; gap: 8px; font-size: 0.65rem; color: rgba(255, 255, 255, 0.2);
+            margin-right: 15px;
+        }
+        .lang-btn {
+            cursor: pointer; transition: 0.4s;
+            color: rgba(255, 255, 255, 0.3);
+            border: none; background: none;
+            text-transform: uppercase; font-family: 'Inter', sans-serif;
+            letter-spacing: 1px;
+        }
+        .lang-btn:hover { color: #e0e0e0; }
+        .lang-btn.active-lang { color: #00ff66; font-weight: 600; }
+
+        /* --- PROJECT HERO --- */
+        .project-hero {
+            height: 90vh; 
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 120px 50px 50px 50px;
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .hero-illustration { width: 150px; height: auto; margin-bottom: 30px; opacity: 0.9; }
+
+        h1 {
+            font-size: 5.5vw;
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 0.9;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            color: #e0e0e0;
+        }
+
+        .project-subject {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 50px;
+            font-weight: 300;
+        }
+
+        .project-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+        }
+
+        .info-block span { display: block; color: rgba(255,255,255,0.4); margin-bottom: 5px; font-weight: 600; }
+
+        /* --- CONTENT SECTIONS --- */
+        .content-grid {
+            max-width: 1400px;
+            margin: 80px auto;
+            padding: 0 50px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+        }
+
+        .content-grid h2 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .content-grid p { font-size: 1rem; font-weight: 300; color: rgba(255,255,255,0.6); }
+
+        .intro-text { max-width: 1400px; margin: 80px auto; padding: 0 50px; }
+        .intro-text p {
+            max-width: 900px;
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* --- GALLERY --- */
+        .project-gallery {
+            display: flex;
+            gap: 165px;
+            padding: 0 50px;
+            max-width: 1400px;
+            margin: 0 auto 80px;
+        }
+
+        .gallery-item { 
+            width: 40%; 
+            aspect-ratio: 4/3; 
+            overflow: hidden; 
+            background: #111; 
+        }
+
+        .gallery-item img { 
+            width: 100%; 
+            height: 100%; 
+            display: block; 
+            object-fit: contain; 
+        }
+
+        .zoom-img {
+            object-fit: cover !important; 
+            object-position: left center; 
+        }
+
+        /* --- PROTOTYPE LINK --- */
+        .prototype-link { margin-top: 20px; }
+        .prototype-link a {
+            color: #e0e0e0;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            font-weight: 600;
+            transition: 0.4s;
+        }
+        .prototype-link a:hover { color: #00ff66; }
+
+        /* --- FOOTER --- */
+        footer {
+            padding: 50px 50px 100px 50px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .project-navigation {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 40px;
+        }
+
+        .back-container { display: flex; justify-content: flex-end; width: 100%; }
+
+        .nav-btn, .back-btn {
+            position: relative;
+            text-decoration: none;
+            color: rgba(255,255,255,0.6);
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            padding-bottom: 8px;
+            transition: 0.4s;
+        }
+
+        .nav-btn::after, .back-btn::after {
+            content: ''; position: absolute; width: 0; height: 1px;
+            bottom: 0; left: 0; background-color: #00ff66; transition: 0.4s;
+        }
+
+        .nav-btn:hover, .back-btn:hover { color: #00ff66; }
+        .nav-btn:hover::after, .back-btn:hover::after { width: 100%; }
+
+        @media (max-width: 768px) {
+            nav { padding: 30px 25px; grid-template-columns: 1fr 1fr; }
+            .nav-center { grid-column: span 2; order: 3; margin-top: 15px; }
+            h1 { font-size: 10vw; }
+            .content-grid { grid-template-columns: 1fr; gap: 40px; }
+            .project-gallery { flex-direction: column; gap: 40px; }
+            .gallery-item { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="loader-content">
+            <img src="img/newforma4.png" alt="">
+            <img src="img/newforma1.png" alt="">
+            <img src="img/newforma2.png" alt="">
+            <img src="img/newforma3.png" alt="">
+            <img src="img/newforma5-1.png" alt="">
+        </div>
+    </div>
+
+    <nav>
+        <div class="nav-left logo">
+            <a href="index.html" data-key="nav-portfolio">PORTFOLIO</a>
+        </div>
+        <div class="nav-center">
+            <a href="projects.html" class="active-link" data-key="nav-projects">PROJECTS</a>
+        </div>
+        <div class="nav-right">
+            <div class="lang-switch">
+                <button class="lang-btn active-lang" onclick="changeLang('it')">IT</button>
+                <span>/</span>
+                <button class="lang-btn" onclick="changeLang('en')">EN</button>
+                <span>/</span>
+                <button class="lang-btn" onclick="changeLang('es')">ES</button>
+            </div>
+            <a href="cv.html" data-key="nav-about">ABOUT</a>
+        </div>
+    </nav>
+
+    <header class="project-hero">
+        <img src="img/newforma3.png" alt="" class="hero-illustration">
+        <h1 data-key="hero-title">From Stories to Data</h1>
+        <div class="project-subject" data-key="hero-subject">The Case Study of Terra di Tutti</div>
+        <div class="project-info">
+            <div class="info-block">
+                <span data-key="info-focus-label">Focus</span>
+                <div data-key="info-focus-content">Data Visualization - Sustainability Design - Social Design</div>
+            </div>
+            <div class="info-block">
+                <span data-key="info-year-label">Year</span>
+                2024
+            </div>
+        </div>
+    </header>
+
+    <section class="intro-text">
+        <p data-key="intro-p">
+            "Terra di Tutti", based in Capannori (Lucca, Italy), is a social enterprise that combines production with environmental and social responsibility. Behind its activities lies a complex network of data — history, processes, impact, and values — which is often difficult to communicate clearly. This thesis explores how Data Visualization can translate that complexity into accessible and meaningful visual narratives.
+            <br><br>
+            Through the analysis of both quantitative and qualitative data, the project transforms numbers and information into a coherent visual system capable of revealing impact and making the organization's values visible.
+        </p>
+    </section>
+
+    <section class="content-grid">
+        <div>
+            <h2 data-key="grid-h2-1">Research & Concept</h2>
+            <p data-key="grid-p-1">The project develops systemic research on "Terra di Tutti", structured around two fundamental dimensions — People and Things — which generate and sustain the organization's life. Through data mapping and analysis, the research explores how material reuse and human relationships intertwine to produce impact.</p>
+        </div>
+        <div>
+            <h2 data-key="grid-h2-2">Data Strategy</h2>
+            <p data-key="grid-p-2">I implemented direct quantitative monitoring for materials and designed a shared inquiry system for over 80 registered individuals. The collected data was reorganized into thematic clusters and translated into experimental visualizations, moving from raw information to structured visual systems.</p>
+        </div>
+    </section>
+
+    <div class="project-gallery">
+        <div class="gallery-item">
+            <img src="img/gremb2.png" alt="apron">
+        </div>
+        <div class="gallery-item">
+            <img src="img/dataviz.png" alt="Detail Jeans" class="zoom-img">
+        </div>
+    </div>
+
+    <section class="content-grid">
+        <div>
+            <h2 data-key="grid-h2-3">Wearable Data</h2>
+            <p data-key="grid-p-3">The visualization was translated into a wearable format: recycled denim aprons featuring fragments of data printed on the fabric. Manually produced through woodblock printing, each piece is unique, transforming data into a tactile and narrative object.</p>
+        </div>
+        <div>
+            <h2 data-key="grid-h2-4">Digital Connection</h2>
+            <p data-key="grid-p-4">Each apron includes a QR code linking to a dedicated web page where the project, the data, and the material reuse process are explained in depth, providing context and revealing the systemic structure behind the collection.</p>
+            <div class="prototype-link">
+                <a href="https://sofysofu.wixsite.com/timil" target="_blank" data-key="proto-link">[ CLICK HERE TO SEE THE WEB PROTOTYPE ]</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="project-gallery">
+        <div class="gallery-item">
+            <img src="img/teloblu.png" alt="makin of">
+        </div>
+        <div class="gallery-item">
+            <img src="img/gremb1.png" alt="Detail Apron 2">
+        </div>
+    </div>
+
+    <footer>
+        <div class="project-navigation">
+            <a href="regia.html" class="nav-btn" data-key="prev-proj">← Previous Project</a>
+            <a href="rituali.html" class="nav-btn" data-key="next-proj">Next Project →</a>
+        </div>
+        <div class="back-container">
+            <a href="projects.html" class="back-btn" data-key="back-list">Back to Projects</a>
+        </div>
+    </footer>
+
+    <script>
+        const translations = {
+            'it': {
+               
+                'hero-title': 'Dalle Storie ai Dati',
+                'hero-subject': 'Il Caso Studio di Terra di Tutti',
+                'info-year-label': 'Anno',
+                'intro-p': '"Terra di Tutti", con sede a Capannori (Lucca), è un\'impresa sociale che unisce produzione a responsabilità ambientale e sociale. Dietro le sue attività si cela una complessa rete di dati — storia, processi, impatto e valori — spesso difficile da comunicare con chiarezza. Questa tesi esplora come la Data Visualization possa tradurre tale complessità in narrazioni visive accessibili e significative.<br><br>Attraverso l\'analisi di dati sia quantitativi che qualitativi, il progetto trasforma numeri e informazioni in un sistema visivo coerente, capace di rivelare l\'impatto e rendere visibili i valori dell\'organizzazione.',
+                'grid-h2-1': 'Ricerca & Concept',
+                'grid-p-1': 'Il progetto sviluppa una ricerca sistemica su "Terra di Tutti", strutturata attorno a due dimensioni fondamentali — Persone e Cose — che generano e sostengono la vita dell\'organizzazione. Attraverso la mappatura e l\'analisi dei dati, la ricerca esplora come il riutilizzo dei materiali e le relazioni umane si intreccino per produrre impatto.',
+                'grid-h2-2': 'Data Strategy',
+                'grid-p-2': 'Ho implementato un monitoraggio quantitativo diretto per i materiali e progettato un sistema di indagine condiviso per oltre 80 persone registrate. I dati raccolti sono stati riorganizzati in cluster tematici e tradotti in visualizzazioni sperimentali, passando dall\'informazione grezza a sistemi visivi strutturati.',
+                'grid-h2-3': 'Wearable Data',
+                'grid-p-3': 'La visualizzazione è stata tradotta in un formato indossabile: grembiuli di denim riciclato con frammenti di dati stampati sul tessuto. Prodotti manualmente tramite stampa a rilievo (woodblock printing), ogni pezzo è unico, trasformando il dato in un oggetto tattile e narrativo.',
+                'grid-h2-4': 'Digital Connection',
+                'grid-p-4': 'Ogni grembiule include un codice QR che rimanda a una pagina web dedicata dove il progetto, i dati e il processo di riutilizzo dei materiali sono spiegati in profondità, fornendo contesto e rivelando la struttura sistemica dietro la collezione.',
+                'proto-link': '[ CLICCA QUI PER VEDERE IL PROTOTIPO WEB ]',
+                'prev-proj': '← Progetto Precedente',
+                'next-proj': 'Prossimo Progetto →',
+                'back-list': 'Torna ai Progetti'
+            },
+            'es': {
+                
+                'hero-title': 'De Historias a Datos',
+                'hero-subject': 'El Caso de Estudio de Terra di Tutti',
+                'info-focus-label': 'Enfoque',
+                'info-focus-content': 'Visualización de Datos - Diseño Sostenible - Diseño Social',
+                'info-year-label': 'Año',
+                'intro-p': '"Terra di Tutti", en Capannori (Lucca, Italia), es una empresa social que combina la producción con la responsabilidad ambiental y social. Detrás de sus actividades se encuentra una compleja red de datos — historia, procesos, impacto y valores — que a menudo es difícil de comunicar con claridad. Esta tesis explora cómo la Visualización de Datos puede traducir esa complejidad en narrativas visuales accesibles y significativas.',
+                'grid-h2-1': 'Investigación & Concepto',
+                'grid-p-1': 'El proyecto desarrolla una investigación sistémica sobre "Terra di Tutti", estructurada en torno a dos dimensiones fundamentales — Personas y Cosas — que generan y sostienen la vida de la organización. A través del mapeo y el análisis de datos, la investigación explora cómo el reutilizo de materiales y las relaciones humanas se entrelazan para producir impacto.',
+                'grid-h2-2': 'Estrategia de Datos',
+                'grid-p-2': 'Implementé un monitoreo cuantitativo directo para los materiales y diseñé un sistema de investigación compartida para más de 80 personas registradas. Los datos recopilados fueron reorganizados en clusters temáticos y traducidos en visualizaciones experimentales, pasando de la información cruda a sistemas visuales estructurados.',
+                'grid-h2-3': 'Datos Usables',
+                'grid-p-3': 'La visualización se tradujo en un formato usable: delantales de denim reciclado con fragmentos de datos impresos en la tela. Producidos manualmente mediante impresión en relieve (woodblock printing), cada pieza es única, transformando el dato en un objeto táctil y narrativo.',
+                'grid-h2-4': 'Conexión Digital',
+                'grid-p-4': 'Cada delantal incluye un código QR que enlaza a una página web dedicada donde el proyecto, los datos y el proceso de reutilización de materiales se explican en profundidad, proporcionando contexto y revelando la estructura sistémica detrás de la colección.',
+                'proto-link': '[ CLIC AQUÍ PARA VER EL PROTOTIPO WEB ]',
+                'prev-proj': '← Proyecto Anterior',
+                'next-proj': 'Siguiente Proyecto →',
+                'back-list': 'Volver a Proyectos'
+            }
+        };
+
+        const enDefault = {
+           
+            'hero-title': 'From Stories to Data',
+            'hero-subject': 'The Case Study of Terra di Tutti',
+            'info-focus-label': 'Focus',
+            'info-focus-content': 'Data Visualization - Sustainability Design - Social Design',
+            'info-year-label': 'Year',
+            'intro-p': '"Terra di Tutti", based in Capannori (Lucca, Italy), is a social enterprise that combines production with environmental and social responsibility. Behind its activities lies a complex network of data — history, processes, impact, and values — which is often difficult to communicate clearly. This thesis explores how Data Visualization can translate that complexity into accessible and meaningful visual narratives.<br><br>Through the analysis of both quantitative and qualitative data, the project transforms numbers and information into a coherent visual system capable of revealing impact and making the organization\'s values visible.',
+            'grid-h2-1': 'Research & Concept',
+            'grid-p-1': 'The project develops systemic research on "Terra di Tutti", structured around two fundamental dimensions — People and Things — which generate and sustain the organization\'s life. Through data mapping and analysis, the research explores how material reuse and human relationships intertwine to produce impact.',
+            'grid-h2-2': 'Data Strategy',
+            'grid-p-2': 'I implemented direct quantitative monitoring for materials and designed a shared inquiry system for over 80 registered individuals. The collected data was reorganized into thematic clusters and translated into experimental visualizations, moving from raw information to structured visual systems.',
+            'grid-h2-3': 'Wearable Data',
+            'grid-p-3': 'The visualization was translated into a wearable format: recycled denim aprons featuring fragments of data printed on the fabric. Manually produced through woodblock printing, each piece is unique, transforming data into a tactile and narrative object.',
+            'grid-h2-4': 'Digital Connection',
+            'grid-p-4': 'Each apron includes a QR code linking to a dedicated web page where the project, the data, and the material reuse process are explained in depth, providing context and revealing the systemic structure behind the collection.',
+            'proto-link': '[ CLICK HERE TO SEE THE WEB PROTOTYPE ]',
+            'prev-proj': '← Previous Project',
+            'next-proj': 'Next Project →',
+            'back-list': 'Back to Projects'
+        };
+
+        function changeLang(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active-lang');
+                if(btn.innerText.toLowerCase() === lang) btn.classList.add('active-lang');
+            });
+
+            const targetData = (lang === 'en') ? enDefault : translations[lang];
+
+            if (targetData) {
+                document.querySelectorAll('[data-key]').forEach(el => {
+                    const key = el.getAttribute('data-key');
+                    if(targetData[key]) el.innerHTML = targetData[key];
+                });
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // Se vuoi che la pagina parta in Italiano di default:
+            changeLang('it'); 
+        });
+
+        // Esegui questo controllo IMMEDIATAMENTE, prima ancora del caricamento completo
+        (function() {
+            const hasLoaded = sessionStorage.getItem("isVisited");
+            const loader = document.getElementById("loader");
+
+            if (hasLoaded) {
+                // Se l'utente ha già visto il loader in questa sessione, lo eliminiamo subito
+                loader.classList.add("loader-none");
+            }
+        })();
+
+        window.addEventListener("load", () => {
+            const loader = document.getElementById("loader");
+            const hasLoaded = sessionStorage.getItem("isVisited");
+
+            if (!hasLoaded) {
+                // Se è la prima volta, facciamo l'animazione classica
+                setTimeout(() => { 
+                    loader.classList.add("loader-hidden");
+                    // Salviamo nel sessionStorage che il loader è stato mostrato
+                    sessionStorage.setItem("isVisited", "true");
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>

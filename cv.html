@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sofia Maggiani</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap');
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body { 
+            font-family: 'Inter', sans-serif;
+            background: #000; 
+            color: #e0e0e0;      
+            line-height: 1.6;
+            overflow-x: hidden; 
+        }
+
+        /* --- LOADING SCREEN --- */
+        #loader {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #000; z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .loader-none {
+            display: none !important;
+        }
+        .loader-content { position: relative; width: 12vw; min-width: 120px; aspect-ratio: 1/1; }
+        .loader-content img {
+            position: absolute; top: 0; left: 0; width: 100%; height: auto;
+            opacity: 0; animation: oneByOne 2s infinite; 
+        }
+        .loader-content img:nth-child(1) { animation-delay: 0s; }
+        .loader-content img:nth-child(2) { animation-delay: 0.33s; }
+        .loader-content img:nth-child(3) { animation-delay: 0.66s; }
+        .loader-content img:nth-child(4) { animation-delay: 1s; }
+        .loader-content img:nth-child(5) { animation-delay: 1.33s; }
+
+        @keyframes oneByOne {
+            0%, 15% { opacity: 1; transform: scale(1); }
+            16%, 100% { opacity: 0; transform: scale(1.05); }
+        }
+
+        .loader-hidden { opacity: 0; pointer-events: none; }
+
+        /* --- NAV BAR --- */
+        nav {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr; 
+            align-items: center;
+            padding: 40px 50px;
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            z-index: 200;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1.5px;
+        }
+
+        .header-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000; z-index: -1;
+        }
+
+        .logo { justify-self: start; }
+        .logo a { color: rgba(255, 255, 255, 0.4); text-decoration: none; font-weight: 600; letter-spacing: 3px; }
+        .logo a:hover { color: #00ff66; }
+
+        .nav-center { justify-self: center; }
+        .nav-right { justify-self: end; display: flex; align-items: center; gap: 30px; }
+
+        /* --- LANGUAGE SWITCHER --- */
+        .lang-switch {
+            display: flex; gap: 8px; font-size: 0.65rem; color: rgba(255, 255, 255, 0.2);
+        }
+
+        .lang-btn {
+            cursor: pointer; transition: 0.4s;
+            color: rgba(255, 255, 255, 0.3);
+            border: none; background: none;
+            text-transform: uppercase; font-family: 'Inter', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .lang-btn:hover { color: #e0e0e0; }
+        .lang-btn.active-lang { color: #00ff66; font-weight: 600; }
+
+        nav a { 
+            color: rgba(255, 255, 255, 0.4); text-decoration: none; 
+            transition: all 0.4s ease; font-weight: 400;
+            position: relative; padding: 5px 0;
+        }
+
+        nav a.active { color: #e0e0e0; }
+        nav a:hover { color: #00ff66; }
+        nav a::after {
+            content: ''; position: absolute; width: 0; height: 1px;
+            bottom: 0; left: 0; background-color: #00ff66; transition: width 0.4s ease;
+        }
+        nav a:hover::after, nav a.active::after { width: 100%; }
+
+        /* --- BACK TO HOME --- */
+        .back-home {
+            position: fixed; bottom: 40px; right: 50px; z-index: 200;
+            text-transform: uppercase; font-size: 0.7rem; letter-spacing: 1.5px;
+        }
+        .back-home a {
+            color: rgba(255, 255, 255, 0.4); text-decoration: none; transition: 0.4s;
+            position: relative; padding-bottom: 8px;
+        }
+        .back-home a::after {
+            content: ''; position: absolute; width: 0; height: 1px;
+            bottom: 0; left: 0; background-color: #00ff66; transition: 0.4s;
+        }
+        .back-home a:hover { color: #00ff66; }
+        .back-home a:hover::after { width: 100%; }
+
+        /* --- CONTENUTI --- */
+        .container { max-width: 1000px; margin: 0 auto; padding: 150px 50px 80px 50px; }
+
+        .row { 
+            display: flex; gap: 2rem; padding: 40px 0; 
+            border-bottom: 1px solid #222; align-items: flex-start;
+        }
+
+        .col-left { 
+            flex: 0 0 220px; font-weight: 600; text-transform: uppercase; 
+            font-size: 0.7rem; color: #666; letter-spacing: 1.5px; 
+        }
+
+        .col-right { flex: 1; font-size: 0.95rem; color: #bbb; font-weight: 300; }
+
+        .skill-category { margin-bottom: 20px; }
+        .skill-category strong { color: #e0e0e0; display: block; margin-bottom: 5px; font-size: 0.8rem; text-transform: uppercase; }
+
+        .cv-profile-img { width: 100%; height: auto; display: block; }
+        .date { font-weight: 600; margin-bottom: 5px; display: block; color: #e0e0e0; font-size: 0.8rem; }
+        .entry { margin-bottom: 30px; }
+        .link { color: #e0e0e0; font-weight: 600; text-decoration: none; border-bottom: 1px solid #444; transition: 0.3s; }
+        .link:hover { color: #00ff66; border-bottom-color: #00ff66; }
+
+        @media (max-width: 768px) { 
+            nav { padding: 30px 25px; grid-template-columns: 1fr 1fr; }
+            .nav-center { grid-column: span 2; order: 3; margin-top: 15px; }
+            .container { padding: 180px 25px 50px 25px; }
+            .row { flex-direction: column; gap: 15px; } 
+            .col-left { flex: none; width: 100%; color: #00ff66; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="loader-content">
+            <img src="img/newforma4.png" alt=""><img src="img/newforma1.png" alt=""><img src="img/newforma2.png" alt=""><img src="img/newforma3.png" alt=""><img src="img/newforma5-1.png" alt="">
+        </div>
+    </div>
+
+    <nav>
+        <div class="header-bg"></div>
+        <div class="logo"><a href="index.html" data-key="nav-portfolio">PORTFOLIO</a></div>
+        <div class="nav-center"><a href="projects.html" data-key="nav-projects">PROJECTS</a></div>
+        <div class="nav-right">
+            <div class="lang-switch">
+                <button class="lang-btn active-lang" onclick="changeLang('it')">IT</button>
+                <span>/</span>
+                <button class="lang-btn" onclick="changeLang('en')">EN</button>
+                <span>/</span>
+                <button class="lang-btn" onclick="changeLang('es')">ES</button>
+            </div>
+            <a href="cv.html" class="active" data-key="nav-about">ABOUT</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row" style="border-top: 1.5px solid #333;">
+            <div class="col-left"><img src="img/sof.png" alt="Sofia Maggiani" class="cv-profile-img"></div>
+            <div class="col-right">
+                <h1 style="font-size: 2.5rem; font-weight: 900; color: #fff; margin-bottom: 20px; letter-spacing: -1px;">SOFIA MAGGIANI</h1>
+                <div id="bio">
+                    Ciao! Mi chiamo Sofia Maggiani e sono nata e cresciuta tra Firenze e Madrid. Dopo un percorso liceale scientifico, la mia strada ha preso una piega creativa con la Laurea Triennale in Disegno Industriale a Firenze, dove ho sviluppato un forte interesse per il visual design.
+                    <br><br>
+                    La mia passione per il mondo visuale e il disegno è presente da molto prima che li riconoscessi come parte di una disciplina di design. Dopo la triennale, ho scelto di approfondire le mie competenze spostandomi verso l'Interaction e l'Experience Design a San Marino — un ambito che trovo stimolante e versatile.
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-left" data-key="label-edu">Education</div>
+            <div class="col-right" id="edu-list">
+                <div class="entry"><span class="date">2024/2027</span> <strong>Laurea Magistrale in Interaction & Experience Design</strong><br>Università di San Marino</div>
+                <div class="entry"><span class="date">2020/2024</span> <strong>Laurea Triennale in Disegno Industriale</strong><br>Università di Firenze</div>
+                <div class="entry"><span class="date">15/2020</span> <strong>Liceo Scientifico Leonardo da Vinci</strong><br>Firenze</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-left" data-key="label-workshops">Workshops</div>
+            <div class="col-right" id="workshop-list">
+                <div class="entry"><span class="date">2025</span> <strong>Corso Preparatorio Web Design</strong><br>HTML e CSS base.</div>
+                <div class="entry"><span class="date">2025</span> <strong>TouchDesigner</strong><br>Competenze base e sviluppo progetto.</div>
+                <div class="entry"><span class="date">2025/2026</span> <strong>Service & Business Design</strong><br>Lavoro in team per creazione eventi.</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-left" data-key="label-projects">Projects</div>
+            <div class="col-right" id="project-list">
+                <div class="entry"><strong data-key="proj1-title">2023 - SCHOOL OF NOT KNOWING</strong><br><span data-key="proj1-desc">Rappresentazione e trasmissione del "non-sapere". Team transdisciplinare per un progetto di intelligibilità civica universale.</span><br><a href="https://civic-city.org/nonsapere/project/" target="_blank" class="link" data-key="view-proj">VEDI PROGETTO</a></div>
+                <div class="entry"><strong data-key="proj2-title">2024 - TRATTO</strong><br><span data-key="proj2-desc">Iniziativa di upcycling home decor curata da Studio Lievito. Assistenza nel design di pattern per oggetti d'arredo con Terra di Tutti.</span><br><a href="https://www.instagram.com/p/C41DQAFi8DD/" target="_blank" class="link" data-key="view-insta">VEDI INSTAGRAM</a></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-left" data-key="label-skills">Skills</div>
+            <div class="col-right">
+                <div class="skill-category">
+                    <strong data-key="skill-graphic">Grafica</strong>
+                    Photoshop<br> Illustrator<br> Indesign<br> After Effects
+                </div>
+                <div class="skill-category">
+                    <strong data-key="skill-model">Modellazione e Rendering</strong>
+                    Rhinoceros<br> Autocad<br> Keyshot
+                </div>
+                <div class="skill-category">
+                    <strong data-key="skill-coding">Coding</strong>
+                    Arduino <br> CSS<br> HTML<br> Javascript<br> Processing
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-left" data-key="label-other">Altre competenze</div>
+            <div class="col-right">TouchDesigner<br> Reaper (sound editing)<br> Office <br>Obsidian</div>
+        </div>
+
+        <div class="row">
+            <div class="col-left" data-key="label-lang">Languages</div>
+            <div id="lang-list" class="col-right">Italiano (madrelingua) <br> Spagnolo (bilingue) <br> Inglese (conoscenza professionale)</div>
+        </div>
+    </div>
+
+    <div class="back-home"><a href="index.html" data-key="back-home">Torna alla Home</a></div>
+
+    <script>
+        const translations = {
+            'it': {
+                'back-home': 'Torna alla Home', 'label-edu': 'Istruzione', 'label-workshops': 'Workshop', 
+                'label-projects': 'Progetti', 'label-skills': 'Competenze', 'label-other': 'Altre Competenze', 'label-lang': 'Lingue',
+                'skill-graphic': 'Grafica', 'skill-model': 'Modellazione e Rendering', 'skill-coding': 'Coding',
+                'view-proj': 'VEDI PROGETTO', 'view-insta': 'VEDI INSTAGRAM',
+                'proj1-title': '2023 - SCHOOL OF NOT KNOWING', 'proj1-desc': 'Rappresentazione e trasmissione del "non-sapere". Team transdisciplinare per un progetto di intelligibilità civica universale.',
+                'proj2-title': '2024 - TRATTO', 'proj2-desc': 'Iniziativa di upcycling home decor curata da Studio Lievito. Assistenza nel design di pattern per oggetti d\'arredo con Terra di Tutti.',
+                'edu-list': '<div class="entry"><span class="date">2024/2027</span> <strong>Laurea Magistrale in Interaction & Experience Design</strong><br>Università di San Marino</div><div class="entry"><span class="date">2020/2024</span> <strong>Laurea Triennale in Disegno Industriale</strong><br>Università di Firenze</div><div class="entry"><span class="date">15/2020</span> <strong>Liceo Scientifico Leonardo da Vinci</strong><br>Firenze</div>',
+                'workshop-list': '<div class="entry"><span class="date">2025</span> <strong>Corso Preparatorio Web Design</strong><br>HTML e CSS base.</div><div class="entry"><span class="date">2025</span> <strong>TouchDesigner</strong><br>Competenze base e sviluppo progetto.</div><div class="entry"><span class="date">2025/2026</span> <strong>Service & Business Design</strong><br>Lavoro in team per creazione eventi.</div>',
+                'lang-list': 'Italiano (madrelingua) <br> Spagnolo (bilingue) <br> Inglese (professionale)',
+                'bio': 'Ciao! Mi chiamo Sofia Maggiani e sono nata e cresciuta tra Firenze e Madrid. Dopo un percorso liceale scientifico, la mia strada ha preso una piega creativa con la Laurea Triennale in Disegno Industriale a Firenze, dove ho sviluppato un forte interesse per il visual design.<br><br>La mia passione per il mondo visuale e il disegno è presente da molto prima che li riconoscessi come parte di una disciplina di design. Dopo la triennale, ho scelto di approfondire le mie competenze spostandomi verso l\'Interaction e l\'Experience Design a San Marino — un ambito che trovo stimolante e versatile.'
+            },
+            'en': {
+                
+                'back-home': 'Back to Home', 'label-edu': 'Education', 'label-workshops': 'Workshops',
+                'label-projects': 'Projects', 'label-skills': 'Skills', 'label-other': 'Other Competences', 'label-lang': 'Languages',
+                'skill-graphic': 'Graphic', 'skill-model': 'Modeling and Rendering', 'skill-coding': 'Coding',
+                'view-proj': 'VIEW PROJECT HERE', 'view-insta': 'VIEW INSTAGRAM',
+                'proj1-title': '2023 - SCHOOL OF NOT KNOWING', 'proj1-desc': 'Representation and transmission of “not-knowing”. A transdisciplinary team for the realisation of a universal civic intelligibility project.',
+                'proj2-title': '2024 - TRATTO', 'proj2-desc': 'Contemporary upcycling home decor initiative curated by Studio Lievito. Contributed by assisting in the design of patterns for home decor objects with Terra di Tutti.',
+                'edu-list': '<div class="entry"><span class="date">2024/2027</span> <strong>Master\'s Degree in Interaction & Experience Design</strong><br>University of San Marino</div><div class="entry"><span class="date">2020/2024</span> <strong>Bachelor\'s Degree in Industrial Design</strong><br>University of Florence</div><div class="entry"><span class="date">15/2020</span> <strong>Liceo Scientifico Leonardo da Vinci</strong><br>Florence</div>',
+                'workshop-list': '<div class="entry"><span class="date">2025</span> <strong>Web Design Preparatory Course</strong><br>Basic HTML and CSS.</div><div class="entry"><span class="date">2025</span> <strong>TouchDesigner</strong><br>Basic skills and project development.</div><div class="entry"><span class="date">2025/2026</span> <strong>Service & Business Design</strong><br>Teamwork for event building.</div>',
+                'lang-list': 'Italian (native) <br> Spanish (bilingual) <br> English (professional knowledge)',
+                'bio': 'Hi! My name is Sofia Maggiani and I was born and raised between Florence and Madrid. After a predominantly scientific education through high school, my path took a creative turn with a Bachelor’s degree in Industrial Design in Florence, where I developed a strong interest in visual design.<br><br>My passion for the visual world and drawing had been present long before I recognized them as part of a design discipline. After completing my undergraduate studies, I chose to deepen and refine my skills by moving into Interaction and Experience Design in San Marino.'
+            },
+            'es': {
+                
+                'back-home': 'Volver al inicio', 'label-edu': 'Educación', 'label-workshops': 'Talleres',
+                'label-projects': 'Proyectos', 'label-skills': 'Habilidades', 'label-other': 'Otras competencias', 'label-lang': 'Idiomas',
+                'skill-graphic': 'Gráfica', 'skill-model': 'Modelado y Renderizado', 'skill-coding': 'Programación',
+                'view-proj': 'VER PROYECTO', 'view-insta': 'VER INSTAGRAM',
+                'proj1-title': '2023 - SCHOOL OF NOT KNOWING', 'proj1-desc': 'Representación y transmisión del "no-saber". Equipo transdisciplinar para la realización de un proyecto de inteligibilidad cívica universal.',
+                'proj2-title': '2024 - TRATTO', 'proj2-desc': 'Iniciativa contemporánea de upcycling home decor comisariada por Studio Lievito. Asistencia en el diseño de patrones para objetos de decoración junto a Terra di Tutti.',
+                'edu-list': '<div class="entry"><span class="date">2024/2027</span> <strong>Máster en Diseño de Interacción y Experiencia</strong><br>Universidad de San Marino</div><div class="entry"><span class="date">2020/2024</span> <strong>Grado en Diseño Industrial</strong><br>Universidad de Florencia</div><div class="entry"><span class="date">15/2020</span> <strong>Instituto de Ciencias Leonardo da Vinci</strong><br>Florencia</div>',
+                'workshop-list': '<div class="entry"><span class="date">2025</span> <strong>Curso Preparatorio Web Design</strong><br>HTML y CSS básico.</div><div class="entry"><span class="date">2025</span> <strong>TouchDesigner</strong><br>Habilidades básicas y desarrollo de proyectos.</div><div class="entry"><span class="date">2025/2026</span> <strong>Service & Business Design</strong><br>Trabajo en equipo para creación de eventos.</div>',
+                'lang-list': 'Italiano (nativo) <br> Español (bilingüe) <br> Inglés (conocimiento profesional)',
+                'bio': '¡Hola! Mi nombre es Sofia Maggiani y nací y crecí entre Florencia y Madrid. Tras una formación científica en el instituto, mi camino dio un giro creativo con el Grado en Diseño Industrial en Florencia, donde desarrollé un gran interés por el diseño visual.<br><br>Mi pasión por el mundo visual y el dibujo estaba presente mucho antes de que los reconociera como parte de una disciplina de diseño. Tras finalizar mis estudios de grado, opté por profundizar mis conocimientos trasladándome a Diseño de Interacción y Experiencia en San Marino.'
+            }
+        };
+
+        function changeLang(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active-lang');
+                if(btn.innerText.toLowerCase() === lang) btn.classList.add('active-lang');
+            });
+
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if(translations[lang][key]) el.innerHTML = translations[lang][key];
+            });
+
+            // Elementi complessi con HTML interno
+            const complexIds = ['bio', 'edu-list', 'workshop-list', 'lang-list'];
+            complexIds.forEach(id => {
+                if(translations[lang][id]) document.getElementById(id).innerHTML = translations[lang][id];
+            });
+        }
+
+         // Esegui questo controllo IMMEDIATAMENTE, prima ancora del caricamento completo
+        (function() {
+            const hasLoaded = sessionStorage.getItem("isVisited");
+            const loader = document.getElementById("loader");
+
+            if (hasLoaded) {
+                // Se l'utente ha già visto il loader in questa sessione, lo eliminiamo subito
+                loader.classList.add("loader-none");
+            }
+        })();
+
+        window.addEventListener("load", () => {
+            const loader = document.getElementById("loader");
+            const hasLoaded = sessionStorage.getItem("isVisited");
+
+            if (!hasLoaded) {
+                // Se è la prima volta, facciamo l'animazione classica
+                setTimeout(() => { 
+                    loader.classList.add("loader-hidden");
+                    // Salviamo nel sessionStorage che il loader è stato mostrato
+                    sessionStorage.setItem("isVisited", "true");
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>

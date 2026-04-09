@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sofia Maggiani</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap');
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: #000;
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- LOADING SCREEN --- */
+        #loader {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-color: #000;
+            z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+         .loader-none {
+            display: none !important;
+        }
+        .loader-content {
+            position: relative;
+            width: 12vw; min-width: 120px;
+            aspect-ratio: 1/1;
+        }
+
+        .loader-content img {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: auto;
+            opacity: 0;
+            animation: oneByOne 2s infinite; 
+        }
+
+        .loader-content img:nth-child(1) { animation-delay: 0s; }
+        .loader-content img:nth-child(2) { animation-delay: 0.33s; }
+        .loader-content img:nth-child(3) { animation-delay: 0.66s; }
+        .loader-content img:nth-child(4) { animation-delay: 1s; }
+        .loader-content img:nth-child(5) { animation-delay: 1.33s; }
+
+        @keyframes oneByOne {
+            0%, 15% { opacity: 1; transform: scale(1); }
+            16%, 100% { opacity: 0; transform: scale(1.05); }
+        }
+
+        .loader-hidden { opacity: 0; pointer-events: none; }
+
+        /* LANGUAGE SWITCHER */
+        .lang-switch {
+            display: flex; gap: 8px; font-size: 0.65rem; color: rgba(255, 255, 255, 0.2);
+            margin-right: 15px;
+        }
+        .lang-btn {
+            cursor: pointer; transition: 0.4s;
+            color: rgba(255, 255, 255, 0.3);
+            border: none; background: none;
+            text-transform: uppercase; font-family: 'Inter', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        
+        /* --- NAV BAR --- */
+        nav {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            padding: 40px 50px;
+            position: fixed;
+            top: 0; width: 100%;
+            z-index: 200;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            background-color: rgba(0, 0, 0, 0.85); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-left { justify-self: start; }
+        .nav-center { justify-self: center; }
+        .nav-right { justify-self: end; display: flex; gap: 20px; align-items: center; }
+
+        nav a { 
+            text-decoration: none; 
+            transition: 0.4s; 
+            color: rgba(255,255,255,0.4); 
+            position: relative; 
+            padding: 5px 0; 
+            font-weight: 400;
+        }
+
+        /* Stato attivo per far apparire la linea verde fissa */
+        nav a.active-link { 
+            color: #e0e0e0; 
+            font-weight: 600; 
+        }
+
+        nav a::after {
+            content: ''; 
+            position: absolute; 
+            width: 0; 
+            height: 1px;
+            bottom: 0; 
+            left: 0; 
+            background-color: #00ff66; 
+            transition: width 0.4s ease;
+        }
+
+        /* La linea si espande se il link è active o se ci passi sopra col mouse */
+        nav a.active-link::after, 
+        nav a:hover::after { 
+            width: 100%; 
+        }
+
+        .logo a { 
+            color: rgba(255, 255, 255, 0.4); 
+            font-weight: 600; 
+            letter-spacing: 3px; 
+        }
+
+
+        /* --- LOGO SPECIFICO --- */
+        .logo a { 
+            color: rgba(255, 255, 255, 0.4); 
+            font-weight: 600; /* Black/Heavy per farlo risaltare */
+            letter-spacing: 3px; 
+        }
+
+
+        /* --- HEADER PROGETTO --- */
+        .project-hero {
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 180px 50px 50px 50px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .hero-illustration-sequence {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin-bottom: 30px;
+        }
+
+        .hero-illustration-sequence img {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: auto;
+            opacity: 0;
+            animation: heroSequence 3s infinite;
+        }
+
+        .hero-illustration-sequence img:nth-child(1) { animation-delay: 0s; }
+        .hero-illustration-sequence img:nth-child(2) { animation-delay: 0.6s; }
+        .hero-illustration-sequence img:nth-child(3) { animation-delay: 1.2s; }
+        .hero-illustration-sequence img:nth-child(4) { animation-delay: 1.8s; }
+        .hero-illustration-sequence img:nth-child(5) { animation-delay: 2.4s; }
+
+        @keyframes heroSequence {
+            0%, 15% { opacity: 0.9; transform: translateY(0); }
+            20%, 100% { opacity: 0; transform: translateY(-5px); }
+        }
+
+        h1 {
+            font-size: 5.5vw;
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 0.9;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            color: #e0e0e0;
+        }
+
+        .project-subject {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 50px;
+            font-weight: 300;
+        }
+
+        .project-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+        }
+
+        .info-block span { display: block; color: rgba(255,255,255,0.4); margin-bottom: 5px; font-weight: 600; }
+
+        /* --- SEZIONI TESTO --- */
+        .intro-text { max-width: 1400px; margin: 80px auto; padding: 0 50px; }
+        .intro-text p {
+            max-width: 900px;
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .content-grid {
+            max-width: 1400px;
+            margin: 80px auto;
+            padding: 0 50px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+        }
+
+        .content-grid h2 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .content-grid p { font-size: 1rem; font-weight: 300; color: rgba(255,255,255,0.6); }
+
+        /* --- VIDEO --- */
+        .video-container {
+            max-width: 1400px;
+            margin: 0 auto 80px;
+            padding: 0 50px;
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            background: #111;
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+        }
+
+        /* --- GALLERY --- */
+        .project-gallery {
+            display: flex;
+            gap: 50px;
+            padding: 0 50px;
+            max-width: 1400px;
+            margin: 0 auto 80px;
+        }
+
+        .gallery-item { 
+            flex: 1; 
+            overflow: hidden; 
+            background: #111;
+            aspect-ratio: 4 / 3; 
+        }
+
+        .gallery-item img, 
+        .gallery-item video { 
+            width: 100%; 
+            height: 100%; 
+            display: block; 
+            object-fit: cover; 
+            transition: 0.8s ease;
+        }
+
+    
+
+        /* --- FOOTER --- */
+        footer {
+            padding: 50px 50px 100px 50px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .project-navigation {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 40px;
+        }
+
+        .back-container { display: flex; justify-content: flex-end; width: 100%; }
+
+        .nav-btn, .back-btn {
+            position: relative;
+            text-decoration: none;
+            color: rgba(255,255,255,0.6);
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            padding-bottom: 8px;
+            transition: 0.4s;
+        }
+
+        .nav-btn::after, .back-btn::after {
+            content: ''; position: absolute; width: 0; height: 1px;
+            bottom: 0; left: 0; background-color: #00ff66; transition: 0.4s;
+        }
+
+        .nav-btn:hover, .back-btn:hover { color: #00ff66; }
+        .nav-btn:hover::after, .back-btn:hover::after { width: 100%; }
+
+        @media (max-width: 768px) {
+            nav { padding: 30px 25px; grid-template-columns: 1fr 1fr; }
+            .nav-center { grid-column: span 2; order: 3; margin-top: 15px; }
+            h1 { font-size: 10vw; }
+            .content-grid { grid-template-columns: 1fr; gap: 40px; }
+            .project-gallery { flex-direction: column; gap: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="loader-content">
+            <img src="img/newforma4.png" alt="">
+            <img src="img/newforma1.png" alt="">
+            <img src="img/newforma2.png" alt="">
+            <img src="img/newforma3.png" alt="">
+            <img src="img/newforma5-1.png" alt="">
+        </div>
+    </div>
+
+    <nav>
+        <div class="nav-left logo">
+            <a href="index.html" data-key="nav-portfolio">PORTFOLIO</a>
+        </div>
+        <div class="nav-center">
+            <a href="projects.html" class="active-link" data-key="nav-projects">PROJECTS</a>
+        </div>
+        <div class="nav-right">
+            <div class="lang-switch">
+                <button class="lang-btn active-lang" onclick="changeLang('it')">IT</button>
+                <span>/</span>
+                <button class="lang-btn" onclick="changeLang('en')">EN</button>
+                <span>/</span>
+                <button class="lang-btn" onclick="changeLang('es')">ES</button>
+            </div>
+            <a href="cv.html" data-key="nav-about">ABOUT</a>
+        </div>
+    </nav>
+
+    <header class="project-hero">
+        <div class="hero-illustration-sequence">
+            <img src="img/newforma5-1.png" alt="">
+            <img src="img/newforma5-2.png" alt="">
+            <img src="img/newforma5-3.png" alt="">
+            <img src="img/newforma5-4.png" alt="">
+            <img src="img/newforma5-5.png" alt="">
+        </div>
+        <h1 data-key="hero-title">Feeling Gradara</h1>
+        <div class="project-subject" data-key="hero-subject">Una mostra a cielo aperto e un palazzo della memoria</div>
+        <div class="project-info">
+            <div class="info-block">
+                <span data-key="info-focus-label">Ambito</span>
+                Interaction Design - Exhibit Design - Experience Design
+            </div>
+            <div class="info-block">
+                <span data-key="info-year-label">Anno</span>
+                2025
+            </div>
+        </div>
+    </header>
+
+    <section class="intro-text">
+        <p data-key="intro-p">
+            Feeling Gradara is a site-specific interactive exhibit that transforms individual sensory experiences into a shared emotional cartography. Set in the medieval village of Gradara, the project invites visitors to explore the town through touch and sound, collecting personal perceptions along the way. These sensory traces are later translated into dynamic visual and sound-based projections, merging into a collective map that visualizes the layered memories of all participants. By combining physical exploration and real-time digital interaction, the exhibit turns the village into a living mnemonic landscape, where memory is not archived but actively constructed and shared.
+        </p>
+    </section>
+
+    <div class="video-container">
+        <div class="video-wrapper">
+            <iframe title="vimeo-player" src="https://player.vimeo.com/video/1167133383?h=4ef5cdeb6e" frameborder="0" 
+                allow="autoplay; fullscreen; picture-in-picture" 
+                allowfullscreen 
+                title="vimeo-player">
+            </iframe>
+        </div>
+    </div>
+
+    <section class="content-grid">
+        <div>
+            <h2 data-key="grid-h2-1">Ricerca: Il Palazzo della Memoria</h2>
+            <p data-key="grid-p-1">
+                The research began with the study of the Young Fund, a unique collection dedicated 
+                to mnemonic systems. The archive reveals how memory has long been conceived as a spatial 
+                and embodied entity rather than a purely mental one. The project reinterprets this material 
+                to transform the village of Gradara into an "open-air memory palace," where remembering becomes an active, perceptual process.
+            </p>
+        </div>
+        <div>
+            <h2 data-key="grid-h2-2">Loci Sensoriali</h2>
+            <p data-key="grid-p-2">
+               In the first phase, visitors explore the village equipped with a blank paper map. 
+               Through various sensory loci, they are invited to interact with tactile surfaces and
+                auditory stimuli. The map ceases to be a tool for orientation and becomes a mnemonic
+                 device: every mark left on it is a physical trace of the visitor's presence and sensations within the space.
+            </p>
+        </div>
+    </section>
+
+    <div class="project-gallery">
+        <div class="gallery-item"><img src="img/young2.jpeg" alt="Detail 1"></div>
+        <div class="gallery-item"><img src="img/tatto.png" alt="Detail 2"></div>
+    </div>
+
+    <section class="content-grid">
+        <div>
+            <h2 data-key="grid-h2-3">Traiettorie Visuali</h2>
+            <p data-key="grid-p-3">
+                Inside the exhibition space, the individual maps are analyzed by an image-recognitio
+                 system. These analog annotations are translated into dynamic projections, turning the su
+                 bjective path into a visual trajectory. Personal data evolves into an emotional 
+                 landscape generated directly from the perceptions recorded during the walk.
+        </div>
+        <div>
+            <h2 data-key="grid-h2-4">Cartografia Collettiva</h2>
+            <p data-key="grid-p-4">
+                The experience culminates in a collective map projected onto the floor, where individual
+                 sensory intensities aggregate into interactive heatmaps. Visitors can activate sounds, 
+                 videos, and emotional filters, contributing to a shared affective cartography. In "Sentire Gradara,
+                 " memory returns to being a bodily, shared, and deeply creative act.
+            </p>
+        </div>
+    </section>
+
+    <div class="project-gallery">
+        <div class="gallery-item"><img src="img/sala1_3.jpg" alt="Detail 3"></div>
+        <div class="gallery-item">
+            <video autoplay loop muted playsinline>
+                <source src="img/expereicne2.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+
+    <footer>
+        <div class="project-navigation">
+            <a href="rituali.html" class="nav-btn" data-key="prev-proj">← Progetto Precedente</a>
+            <a href="associa.html" class="nav-btn" data-key="next-proj">Progetto Successivo →</a>
+        </div>
+        <div class="back-container">
+            <a href="projects.html" class="back-btn" data-key="back-list">Torna ai Progetti</a>
+        </div>
+    </footer>
+
+    <script>
+        const translations = {
+            'it': {
+               'hero-title': 'Sentire Gradara',
+                'hero-subject': 'Una mostra a cielo aperto e un palazzo della memoria',
+                'info-focus-label': 'Ambito', 'info-year-label': 'Anno',
+                'intro-p': 'Sentire Gradara è una mostra interattiva site-specific che trasforma le esperienze sensoriali individuali in una cartografia emotiva condivisa. Ambientato nel borgo medievale di Gradara, il progetto invita i visitatori a esplorare la città attraverso il tatto e il suono, raccogliendo percezioni personali lungo il percorso. Queste tracce sensoriali vengono poi tradotte in proiezioni visive e sonore dinamiche, fondendosi in una mappa collettiva che visualizza le memorie stratificate di tutti i partecipanti.',
+                'grid-h2-1': 'Ricerca: Il Palazzo della Memoria',
+                'grid-p-1': 'La ricerca è iniziata con lo studio del Fondo Young, una collezione unica dedicata ai sistemi mnemonici. L\'archivio rivela come la memoria sia stata a lungo concepita come un\'entità spaziale e corporea piuttosto che puramente mentale. Il progetto reinterpreta questo materiale per trasformare il villaggio di Gradara in un "palazzo della memoria a cielo aperto", dove ricordare diventa un processo attivo e percettivo.',
+                'grid-h2-2': 'Loci Sensoriali',
+                'grid-p-2': 'Nella prima fase, i visitatori esplorano il villaggio muniti di una mappa di carta bianca. Attraverso diversi punti di riferimento sensoriali, sono invitati a interagire con superfici tattili e stimoli uditivi. La mappa cessa di essere uno strumento di orientamento e diventa un dispositivo mnemonico: ogni segno lasciato su di essa è una traccia fisica della presenza e delle sensazioni del visitatore all\'interno dello spazio.',
+                'grid-h2-3': 'Traiettorie Visuali',
+                'grid-p-3': 'All\'interno dello spazio espositivo, le singole mappe vengono analizzate da un sistema di riconoscimento d\'immagine. Queste annotazioni analogiche vengono tradotte in proiezioni dinamiche, trasformando il percorso soggettivo in una traiettoria visiva.I dati personali si trasformano in un paesaggio emotivo generato direttamente dalle percezioni registrate durante la passeggiata.',
+                'grid-h2-4': 'Cartografia Collettiva',
+                'grid-p-4': 'L\'esperienza culmina in una mappa collettiva proiettata sul pavimento, dove le singole intensità sensoriali si aggregano in heatmap interattive. I visitatori possono attivare suoni, video e filtri emotivi, contribuendo a una cartografia affettiva condivisa. In "Sentire Gradara", la memoria torna ad essere un atto corporeo, condiviso e profondamente creativo.',
+                'prev-proj': '← Progetto Precedente', 'next-proj': 'Progetto Successivo →', 'back-list': 'Torna ai Progetti'
+            },
+            'es': {
+                'hero-title': 'Sintiendo Gradara',
+                'hero-subject': 'Una exposición al aire libre y un palacio de la memoria',
+                'info-focus-label': 'Enfoque', 'info-year-label': 'Año',
+                'intro-p': 'Sintiendo Gradara es una exposición interactiva site-specific que transforma las experiencias sensoriales individuales en una cartografía emocional compartida. Ubicado en el pueblo medieval de Gradara, el proyecto invita a los visitantes a explorar la ciudad a través del tacto y el sonido, recogiendo percepciones personales a lo largo del camino.',
+                'grid-h2-1': 'Investigación: El Palacio de la Memoria',
+                'grid-p-1': 'La investigación comenzó con el estudio del archivo Young, una colección única dedicada a los sistemas mnemotécnicos. El archivo revela cómo la memoria ha sido concebida durante mucho tiempo como una entidad espacial y corpórea, en lugar de ser puramente mental. El proyecto reinterpreta este material para transformar el pueblo de Gradara en un "palacio de la memoria al aire libre", donde el recuerdo se convierte en un proceso perceptivo y activo.',
+
+                'grid-h2-2': 'Loci Sensoriales',
+                'grid-p-2': 'En la primera fase, los visitantes exploran el pueblo equipados con un mapa de papel en blanco. A través de varios loci sensoriales, se les invita a interactuar con superficies táctiles y estímulos auditivi. El mapa deja de ser una herramienta de orientación para convertirse en un dispositivo mnemotécnico: cada marca dejada en él ès un rastro físico de la presencia y de las sensaciones del visitante en el espacio.',
+                'grid-h2-3': 'Trayectorias Visuales',
+                'grid-p-3': 'Dentro del espacio de la exposición, los mapas individuales son analizados por un sistema de reconocimiento de imágenes. Estas anotazioni analógicas se traducen en proyecciones dinámicas, transformando el recorrido subjetivo en una trayectoria visual. Los datos personales evolucionan hacia un paisaje emocional generado directamente a partir de las percepciones registradas durante el paseo.',
+                'grid-h2-4': 'Cartografía Colectiva',
+                'grid-p-4': 'La experiencia culmina en un mapa colectivo proyectado sobre el suelo, donde las intensidades sensoriales individuales se agregan en mapas de calor interactivos. Los visitantes pueden activar sonidos, videos y filtros emocionales, contribuyendo a una cartografía afectiva compartida. En "Sintiendo Gradara", la memoria vuelve a ser un acto corporal, compartido y profundamente creativo.',
+                'prev-proj': '← Proyecto Anterior', 'next-proj': 'Siguiente Proyecto →', 'back-list': 'Volver a Proyectos'
+            }
+        };
+
+        const enDefault = {
+            'nav-portfolio': 'PORTFOLIO', 
+            'nav-projects': 'PROJECTS', 
+            'nav-about': 'ABOUT',
+            'hero-title': 'Feeling Gradara',
+            'hero-subject': 'An Open-Air Exhibition and Memory Palace',
+            'info-focus-label': 'Focus', 
+            'info-year-label': 'Year',
+            'intro-p': 'Feeling Gradara is a site-specific interactive exhibit that transforms individual sensory experiences into a shared emotional cartography. Set in the medieval village of Gradara, the project invites visitors to explore the town through touch and sound, collecting personal perceptions along the way. These sensory traces are later translated into dynamic visual and sound-based projections, merging into a collective map that visualizes the layered memories of all participants. By combining physical exploration and real-time digital interaction, the exhibit turns the village into a living mnemonic landscape, where memory is not archived but actively constructed and shared.',
+            
+            // Sezione 01
+            'grid-h2-1': 'Research: The Memory Palace',
+            'grid-p-1': 'The research began with the study of the Young Fund, a unique collection dedicated to mnemonic systems. The archive reveals how memory has long been conceived as a spatial and embodied entity rather than a purely mental one. The project reinterprets this material to transform the village of Gradara into an "open-air memory palace," where remembering becomes an active, perceptual process.',
+            
+            // Sezione 02
+            'grid-h2-2': 'Sensory Loci',
+            'grid-p-2': 'In the first phase, visitors explore the village equipped with a blank paper map. Through various sensory loci, they are invited to interact with tactile surfaces and auditory stimuli. The map ceases to be a tool for orientation and becomes a mnemonic device: every mark left on it is a physical trace of the visitor\'s presence and sensations within the space.',
+            
+            // Sezione 03
+            'grid-h2-3': 'Visual Trajectories',
+            'grid-p-3': 'Inside the exhibition space, the individual maps are analyzed by an image-recognition system. These analog annotations are translated into dynamic projections, turning the subjective path into a visual trajectory. Personal data evolves into an emotional landscape generated directly from the perceptions recorded during the walk.',
+            
+            // Sezione 04
+            'grid-h2-4': 'Collective Cartography',
+            'grid-p-4': 'The experience culminates in a collective map projected onto the floor, where individual sensory intensities aggregate into interactive heatmaps. Visitors can activate sounds, videos, and emotional filters, contributing to a shared affective cartography. In "Feeling Gradara," memory returns to being a bodily, shared, and deeply creative act.',
+            
+            'prev-proj': '← Previous Project', 
+            'next-proj': 'Next Project →', 
+            'back-list': 'Back to Projects'
+        };
+
+        function changeLang(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active-lang');
+                if(btn.innerText.toLowerCase() === lang) btn.classList.add('active-lang');
+            });
+
+            const targetData = (lang === 'en') ? enDefault : translations[lang];
+
+            if (targetData) {
+                document.querySelectorAll('[data-key]').forEach(el => {
+                    const key = el.getAttribute('data-key');
+                    if(targetData[key]) el.innerHTML = targetData[key];
+                });
+            }
+            document.documentElement.lang = lang;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            changeLang('it'); 
+        });
+
+        // Esegui questo controllo IMMEDIATAMENTE, prima ancora del caricamento completo
+        (function() {
+            const hasLoaded = sessionStorage.getItem("isVisited");
+            const loader = document.getElementById("loader");
+
+            if (hasLoaded) {
+                // Se l'utente ha già visto il loader in questa sessione, lo eliminiamo subito
+                loader.classList.add("loader-none");
+            }
+        })();
+
+        window.addEventListener("load", () => {
+            const loader = document.getElementById("loader");
+            const hasLoaded = sessionStorage.getItem("isVisited");
+
+            if (!hasLoaded) {
+                // Se è la prima volta, facciamo l'animazione classica
+                setTimeout(() => { 
+                    loader.classList.add("loader-hidden");
+                    // Salviamo nel sessionStorage che il loader è stato mostrato
+                    sessionStorage.setItem("isVisited", "true");
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>

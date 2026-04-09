@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sofia Maggiani</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap');
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: #000;
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* --- LOADING SCREEN --- */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .loader-none { display: none !important; }
+
+        .loader-content {
+            position: relative;
+            width: 12vw;
+            min-width: 120px;
+            aspect-ratio: 1/1;
+        }
+
+        .loader-content img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: auto;
+            opacity: 0;
+            animation: oneByOne 2s infinite; 
+        }
+
+        .loader-content img:nth-child(1) { animation-delay: 0s; }
+        .loader-content img:nth-child(2) { animation-delay: 0.33s; }
+        .loader-content img:nth-child(3) { animation-delay: 0.66s; }
+        .loader-content img:nth-child(4) { animation-delay: 1s; }
+        .loader-content img:nth-child(5) { animation-delay: 1.33s; }
+        .loader-content img:nth-child(6) { animation-delay: 1.66s; }
+
+        @keyframes oneByOne {
+            0%, 15% { opacity: 1; transform: scale(1); }
+            16%, 100% { opacity: 0; transform: scale(1.05); }
+        }
+
+        .loader-hidden { opacity: 0; pointer-events: none; }
+
+        /* --- NAV BAR --- */
+        nav {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr; 
+            align-items: center;
+            padding: 40px 50px;
+            position: fixed;
+            width: 100%;
+            z-index: 200;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1.5px;
+        }
+
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            z-index: -1;
+        }
+
+        .logo { justify-self: start; }
+        .logo a {
+            color: rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            font-weight: 600; 
+            letter-spacing: 3px;
+            transition: color 0.4s ease;
+        }
+        .logo a:hover { color: #00ff66; }
+
+        .nav-center { justify-self: center; }
+        .nav-right { justify-self: end; }
+
+        nav a { 
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none; 
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+            font-weight: 400;
+            position: relative;
+            padding: 5px 0;
+        }
+
+        .nav-center a:hover, .nav-right a:hover { color: #00ff66; }
+
+        .nav-center a::after, .nav-right a::after {
+            content: '';
+            position: absolute;
+            width: 0; height: 1px;
+            bottom: 0; left: 0;
+            background-color: #00ff66;
+            transition: width 0.4s ease;
+        }
+        .nav-center a:hover::after, .nav-right a:hover::after { width: 100%; }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* AGGIORNATO: Titolo più piccolo e centrale */
+       .hero-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1vw; /* Leggermente più respiro tra nome e cognome */
+            width: 100%;
+            font-size: 5vw; /* Dimensione ridotta per un look più fine */
+            font-weight: 500; /* Peso Light: molto più sottile ed elegante */
+            text-transform: uppercase;
+            pointer-events: none;
+            z-index: 50;
+            letter-spacing: 0.05em; /* Spaziatura più ampia per un tocco "high-end" */
+        }
+
+        .parallax-container {
+            position: absolute;
+            width: 100%; height: 100%;
+            top: 0; left: 0; z-index: 1;
+        }
+
+        .floating-shape {
+            position: absolute;
+            will-change: transform;
+            transition: transform 0.2s ease-out;
+        }
+
+        .floating-shape img {
+            width: 100%;
+            animation: breath 8s ease-in-out infinite;
+        }
+
+        @keyframes breath {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.03); }
+        }
+
+        .hero-footer {
+            position: absolute;
+            bottom: 40px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1.2fr;
+            padding: 0 50px;
+            align-items: end;
+            z-index: 100;
+        }
+
+        .lang-switch { margin-bottom: 15px; display: flex; gap: 10px; font-size: 0.6rem; }
+        .lang-btn { cursor: pointer; color: #555; transition: color 0.3s; }
+        .lang-btn.active { color: #e0e0e0; text-decoration: underline; }
+
+        .welcome-box { max-width: 350px; }
+        .welcome-box h3 { font-size: 0.7rem; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        #desc-text { font-size: 0.75rem; line-height: 1.6; color: #ccc; min-height: 80px; }
+
+        .stats-col { font-size: 0.7rem; color: #888; text-transform: uppercase; }
+        .stats-col div { margin-bottom: 15px; }
+        .stats-label { color: #888; margin-bottom: 4px; font-size: 0.6rem; }
+        .stats-value { color: #e0e0e0; border-bottom: 1px solid #333; padding-bottom: 5px; }
+
+        .stats-value a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            margin-right: 12px;
+            display: inline-block;
+        }
+        .stats-value a:hover { color: #00ff66; }
+
+        @media (max-width: 768px) {
+            nav { padding: 30px 25px; grid-template-columns: 1fr 1fr; }
+            .nav-center { grid-column: span 2; order: 3; margin-top: 15px; }
+            .hero-title { 
+                font-size: 12vw; 
+                font-weight: 300;
+                letter-spacing: 0.02em;
+            }
+            .hero-footer { 
+                grid-template-columns: 1fr; 
+                position: relative; 
+                padding: 50px; 
+                margin-top: 100vh; 
+                bottom: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="loader-content">
+            <img src="img/newforma4.png" alt="">
+            <img src="img/newforma1.png" alt="">
+            <img src="img/newforma2.png" alt="">
+            <img src="img/newforma3.png" alt="">
+            <img src="img/newforma5-1.png" alt="">
+        </div>
+    </div>
+
+    <nav>
+        <div class="header-bg"></div>
+        <div class="logo">
+            <a href="index.html" class="active-link">PORTFOLIO</a>
+        </div>
+        <div class="nav-center">
+            <a href="projects.html">PROJECTS</a>
+        </div>
+        <div class="nav-right">
+            <a href="cv.html">ABOUT</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="parallax-container" id="scene">
+            <div class="floating-shape" data-depth="0.03" style="top: 15%; left: 65%; width: 8vw;"><img src="img/newforma5-3.png"></div>
+            <div class="floating-shape" data-depth="0.05" style="top: 9%; left: 20%; width: 20vw;"><img src="img/newforma1.png"></div>
+            <div class="floating-shape" data-depth="0.02" style="top: 10%; left: 85%; width: 12vw;"><img src="img/newforma4.png"></div>
+            <div class="floating-shape" data-depth="0.06" style="top: 45%; left: 2%; width: 14vw;"><img src="img/newforma2.png"></div>
+            <div class="floating-shape" data-depth="0.10" style="top: 35%; left: 40%; width: 14vw;"><img src="img/newforma5-5.png" style="filter: brightness(1.3);"></div>
+            <div class="floating-shape" data-depth="0.08" style="top: 30%; left: 55%; width: 20vw;"><img src="img/newforma3.png"></div>
+            <div class="floating-shape" data-depth="0.11" style="top: 55%; left: 78%; width: 19vw;"><img src="img/newforma5-4.png"></div>
+            <div class="floating-shape" data-depth="0.13" style="top: 75%; left: 15%; width: 13vw;"><img src="img/newforma5-2.png"></div>
+            <div class="floating-shape" data-depth="0.07" style="top: 20%; left: 5%; width: 7vw;"><img src="img/newforma5-1.png"></div>
+        </div>
+
+        <div class="hero-title">
+            <span>S</span>
+            <span>M</span>
+        </div>
+
+        <div class="hero-footer">
+            <div class="welcome-box">
+                <div class="lang-switch">
+                    <span class="lang-btn active" onclick="setLang('it')">IT</span>
+                    <span class="lang-btn" onclick="setLang('en')">EN</span>
+                    <span class="lang-btn" onclick="setLang('es')">ES</span>
+                </div>
+                <h3>Welcome</h3>
+                <p id="desc-text">Laureata in Industrial Design a Firenze, attualmente iscritta al corso Magistrale in Interaction and Experience Design a San Marino. Esploro percorsi trasversali tra comunicazione, dati e interazione.</p>
+            </div>
+
+            <div class="stats-col">
+                <div><p class="stats-label">NAME</p><p class="stats-value">SOFIA MAGGIANI</p></div>
+                <div><p class="stats-label">LOCATION</p><p class="stats-value">FLORENCE / SAN MARINO</p></div>
+            </div>
+
+            <div class="stats-col">
+                <div><p class="stats-label">ROLE</p><p class="stats-value">INTERACTION DESIGNER</p></div>
+                <div>
+                    <p class="stats-label">CONTACTS</p>
+                    <p class="stats-value">
+                        <a href="mailto:sofiamaggiani@email.com">EMAIL</a>
+                        <a href="https://www.linkedin.com/in/sofia-maggiani-1b4645251" target="_blank">LINKEDIN</a>
+                        <a href="https://www.instagram.com/maggiansss/" target="_blank">INSTAGRAM</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        (function() {
+            const hasLoaded = sessionStorage.getItem("isVisited");
+            const loader = document.getElementById("loader");
+            if (hasLoaded) { loader.classList.add("loader-none"); }
+        })();
+
+        window.addEventListener("load", () => {
+            const loader = document.getElementById("loader");
+            const hasLoaded = sessionStorage.getItem("isVisited");
+            if (!hasLoaded) {
+                setTimeout(() => { 
+                    loader.classList.add("loader-hidden");
+                    sessionStorage.setItem("isVisited", "true");
+                }, 2000);
+            }
+        });
+
+        document.addEventListener("mousemove", (e) => {
+            const shapes = document.querySelectorAll(".floating-shape");
+            const x = (window.innerWidth / 2 - e.clientX);
+            const y = (window.innerHeight / 2 - e.clientY);
+
+            shapes.forEach((shape) => {
+                const depth = shape.getAttribute("data-depth");
+                const moveX = x * depth;
+                const moveY = y * depth;
+                shape.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
+            });
+        });
+
+        const texts = {
+            it: "Laureata in Industrial Design a Firenze, attualmente iscritta al corso Magistrale in Interaction and Experience Design a San Marino. Esploro percorsi trasversali tra comunicazione, dati e interazione.",
+            en: "Graduated in Industrial Design in Florence, currently pursuing a Master's degree in Interaction and Experience Design in San Marino. I explore transversal paths between communication, data, and interaction.",
+            es: "Graduada en Diseño Industrial en Florencia, actualmente cursando un Máster en Diseño de Interacción y Experiencia en San Marino. Exploro caminos trasversales entre comunicazione, dati e interazione."
+        };
+
+        function setLang(lang) {
+            document.getElementById('desc-text').innerText = texts[lang];
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.innerText.toLowerCase() === lang) btn.classList.add('active');
+            });
+        }
+    </script>
+</body>
+</html>

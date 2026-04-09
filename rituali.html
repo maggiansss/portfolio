@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sofia Maggiani</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap');
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: #000;
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- LOADING SCREEN --- */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .loader-none {
+            display: none !important;
+        }
+        .loader-content {
+            position: relative;
+            width: 12vw;
+            min-width: 120px;
+            aspect-ratio: 1/1;
+        }
+
+        .loader-content img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: auto;
+            opacity: 0;
+            animation: oneByOne 2s infinite; 
+        }
+
+        .loader-content img:nth-child(1) { animation-delay: 0s; }
+        .loader-content img:nth-child(2) { animation-delay: 0.33s; }
+        .loader-content img:nth-child(3) { animation-delay: 0.66s; }
+        .loader-content img:nth-child(4) { animation-delay: 1s; }
+        .loader-content img:nth-child(5) { animation-delay: 1.33s; }
+
+        @keyframes oneByOne {
+            0%, 15% { opacity: 1; transform: scale(1); }
+            16%, 100% { opacity: 0; transform: scale(1.05); }
+        }
+
+        .loader-hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+         /* --- NAV BAR --- */
+        nav {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            padding: 40px 50px;
+            position: fixed;
+            top: 0; width: 100%;
+            z-index: 200;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            background-color: rgba(0, 0, 0, 0.85); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-left { justify-self: start; }
+        .nav-center { justify-self: center; }
+        .nav-right { justify-self: end; display: flex; gap: 20px; align-items: center; }
+
+        nav a { 
+            text-decoration: none; 
+            transition: 0.4s; 
+            color: rgba(255,255,255,0.4); 
+            position: relative; 
+            padding: 5px 0; 
+            font-weight: 400;
+        }
+
+        /* Stato attivo per far apparire la linea verde fissa */
+        nav a.active-link { 
+            color: #e0e0e0; 
+            font-weight: 600; 
+        }
+
+        nav a::after {
+            content: ''; 
+            position: absolute; 
+            width: 0; 
+            height: 1px;
+            bottom: 0; 
+            left: 0; 
+            background-color: #00ff66; 
+            transition: width 0.4s ease;
+        }
+
+        /* La linea si espande se il link è active o se ci passi sopra col mouse */
+        nav a.active-link::after, 
+        nav a:hover::after { 
+            width: 100%; 
+        }
+
+        .logo a { 
+            color: rgba(255, 255, 255, 0.4); 
+            font-weight: 600; 
+            letter-spacing: 3px; 
+        }
+
+        /* Ora il logo eredita la linea verde perché abbiamo rimosso il display:none */
+        .logo a:hover { color: #e0e0e0; }
+
+
+        /* --- LANGUAGE SWITCHER --- */
+        .lang-switch {
+            display: flex; gap: 8px; font-size: 0.65rem; color: rgba(255, 255, 255, 0.2);
+            margin-right: 15px;
+        }
+        .lang-btn {
+            cursor: pointer; transition: 0.4s;
+            color: rgba(255, 255, 255, 0.3);
+            border: none; background: none;
+            text-transform: uppercase; font-family: 'Inter', sans-serif;
+            letter-spacing: 1px;
+        }
+        .lang-btn:hover { color: #e0e0e0; }
+        .lang-btn.active-lang { color: #00ff66; font-weight: 600; }
+
+        /* --- HEADER PROGETTO --- */
+        .project-hero {
+            height: auto;
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 180px 50px 50px 50px;
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .hero-illustration { width: 150px; height: auto; margin-bottom: 30px; opacity: 0.9; }
+
+        h1 {
+            font-size: 5.5vw;
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 0.9;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            color: #e0e0e0;
+        }
+
+        .project-subject {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 50px;
+            font-weight: 300;
+        }
+
+        .project-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+        }
+
+        .info-block span { display: block; color: rgba(255,255,255,0.4); margin-bottom: 5px; font-weight: 600; }
+
+        /* --- SEZIONI TESTO --- */
+        .content-grid {
+            max-width: 1400px;
+            margin: 80px auto;
+            padding: 0 50px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+        }
+
+        .content-grid h2 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .content-grid p { font-size: 1rem; font-weight: 300; color: rgba(255,255,255,0.6); }
+
+        .intro-text { max-width: 1400px; margin: 80px auto; padding: 0 50px; }
+        .intro-text p {
+            max-width: 900px;
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* --- VIDEO --- */
+        .video-container {
+            max-width: 1400px;
+            margin: 0 auto 80px;
+            padding: 0 50px;
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            background: #111;
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+/* --- GALLERY UNIFORME (SENZA TAGLI) --- */
+        .project-gallery {
+            display: flex;
+            gap: 40px; 
+            padding: 0 50px;
+            max-width: 1400px;
+            margin: 0 auto 80px;
+        }
+        
+        .gallery-item {
+            flex: 1;
+            aspect-ratio: 3 / 2; /* Il rettangolo rimane fisso */
+            overflow: hidden;
+            background-color: #000; /* Riempie di nero i bordi dove l'immagine non arriva */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gallery-item img { 
+            width: 100%; 
+            height: 100%; 
+            /* MODIFICA FONDAMENTALE: */
+            object-fit: contain; /* L'immagine viene rimpicciolita finché non entra tutta, senza zoom */
+            display: block; 
+            transition: 0.8s ease; 
+        }
+
+    
+        .gallery-item2 img { 
+            width: 100%; 
+            height: 100%; 
+            /* Forza il rettangolo 3/2 */
+            aspect-ratio: 3 / 2; 
+            
+            /* Lo "zoom" intelligente: riempie il rettangolo tagliando l'eccesso 
+            ma MANTENENDO le proporzioni (niente stretch) */
+            object-fit: cover; 
+            
+            /* Allinea lo zoom al centro della foto */
+            object-position: center; 
+            
+            display: block; 
+            transition: 0.8s ease; 
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            padding: 50px 50px 100px 50px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .project-navigation {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 40px;
+        }
+
+        .back-container { display: flex; justify-content: flex-end; width: 100%; }
+
+        .nav-btn, .back-btn {
+            position: relative;
+            text-decoration: none;
+            color: rgba(255,255,255,0.6);
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            padding-bottom: 8px;
+            transition: 0.4s;
+        }
+
+        .nav-btn::after, .back-btn::after {
+            content: ''; position: absolute; width: 0; height: 1px;
+            bottom: 0; left: 0; background-color: #00ff66; transition: 0.4s;
+        }
+
+        .nav-btn:hover, .back-btn:hover { color: #00ff66; }
+        .nav-btn:hover::after, .back-btn:hover::after { width: 100%; }
+
+        @media (max-width: 768px) {
+            nav { padding: 30px 25px; grid-template-columns: 1fr 1fr; }
+            .nav-center { grid-column: span 2; order: 3; margin-top: 15px; }
+            h1 { font-size: 10vw; }
+            .content-grid { grid-template-columns: 1fr; gap: 40px; }
+            .project-gallery { flex-direction: column; gap: 40px; }
+            .gallery-item { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div id="loader">
+        <div class="loader-content">
+            <img src="img/newforma4.png" alt="">
+            <img src="img/newforma1.png" alt="">
+            <img src="img/newforma2.png" alt="">
+            <img src="img/newforma3.png" alt="">
+            <img src="img/newforma5-1.png" alt="">
+        </div>
+    </div>
+
+     <nav>
+        <div class="nav-left logo">
+            <a href="index.html" data-key="nav-portfolio">PORTFOLIO</a>
+        </div>
+        <div class="nav-center">
+            <a href="projects.html" class="active-link" data-key="nav-projects">PROJECTS</a>
+        </div>
+        <div class="nav-right">
+            <div class="lang-switch">
+                <button class="lang-btn active-lang" onclick="changeLang('it')">IT</button>
+                <span>/</span>
+                <button class="lang-btn" onclick="changeLang('en')">EN</button>
+                <span>/</span>
+                <button class="lang-btn" onclick="changeLang('es')">ES</button>
+            </div>
+            <a href="cv.html" data-key="nav-about">ABOUT</a>
+        </div>
+    </nav>
+
+    <header class="project-hero">
+        <img src="img/newforma2.png" alt="Sound Rituals Illustration" class="hero-illustration">
+        <h1 data-key="hero-title">Sound Rituals</h1>
+        <div class="project-subject" data-key="hero-subject">Interactive Experiences for the Archaeological & Ethnographic Museum of Santarcangelo</div>
+        <div class="project-info">
+            <div class="info-block">
+                <span data-key="info-focus-label">Focus</span>
+                Interaction Design - Product Design - PHYSICAL COMPUTING
+            </div>
+            <div class="info-block">
+                <span data-key="info-year-label">Year</span>
+                2025
+            </div>
+        </div>
+    </header>
+
+    <section class="intro-text">
+        <p data-key="intro-p">
+            "Sound Rituals" is an interactive installation designed to enhance the Archaeological and Ethnographic Museum of Santarcangelo in Romagna, through sound-based interaction.
+            The project transforms archival objects into active narrative elements. Each selected artifact is equipped with a tag that triggers a specific sound when approached with a portable device. As visitors move through the space, sounds overlap and merge, creating an evolving and collective composition.
+            <br><br>
+            Rather than presenting a linear story, the installation embraces fragmentation and layering. 
+            The visitor’s path turns into a sensory exploration in which sound acts as a medium of interpretation, connecting tangible heritage with contemporary experience.
+        </p>
+    </section>
+
+    <div class="video-container">
+        <div class="video-wrapper">
+            <iframe 
+                src="https://player.vimeo.com/video/1166762764?h=48b54f9dd0&autoplay=1&muted=1&loop=1&controls=1" 
+                frameborder="0" 
+                allow="autoplay; fullscreen; picture-in-picture" 
+                allowfullscreen 
+                title="vimeo-player">
+             </iframe>
+        </div>
+    </div>
+
+    <section class="content-grid">
+        <div>
+            <h2 data-key="grid-h2-1">Concept: The Positive Disorder</h2>
+            <p data-key="grid-p-1">
+                The project was developed for the storage space of the MET – Museo degli Usi e Costumi della Gente di Romagna in Santarcangelo. 
+                The archive appears dense and unstructured, where objects accumulate without a clear linear order. 
+                Rather than reorganizing the space, the project embraces this apparent disorder as a narrative resource.
+            </p>
+        </div>
+        <div>
+            <h2 data-key="grid-h2-2">Interaction Strategy</h2>
+            <p data-key="grid-p-2">
+                Inspired by the concept of “positive disorder”, the installation activates the objects without altering their position, 
+                allowing visitors to explore the archive freely and build their own interpretative path through sound. 
+                Each selected artifact becomes an active catalyst for memory.
+            </p>
+        </div>
+    </section>
+
+    <div class="project-gallery">
+        <div class="gallery-item2">
+            <img src="img/render-prova4.280.jpg" alt="MET Archive Context">
+        </div>
+        <div class="gallery-item2">
+            <img src="img/render-prova3.278.jpg" alt="Object Detail">
+        </div>
+    </div>
+
+    <section class="content-grid">
+        <div>
+            <h2 data-key="grid-h2-3">How to use it</h2>
+            <p data-key="grid-p-3">
+                Visitors receive a portable device and move through the space autonomously. By approaching specific tagged objects, 
+                they trigger sound loops associated with tools, domestic artifacts, and traditional crafts. 
+                The interaction is non-linear: sounds overlap progressively, generating an evolving composition — a personal “sound ritual” — 
+                shaped by the visitor’s unique movements.
+            </p>
+        </div>
+        <div>
+            <h2 data-key="grid-h2-4">The Technology</h2>
+            <p data-key="grid-p-4">
+                The system is based on NFC technology integrated into object tags. The device includes an NFC module for recognition, 
+                an Arduino microcontroller for real-time sound management, and a DFPlayer for audio playback. 
+                A circular LED ring provides immediate visual feedback, turning technology into an intangible interface.
+            </p>
+        </div>
+    </section>
+
+    <div class="project-gallery">
+        <div class="gallery-item">
+            <img src="img/STORYBOARD3.png" alt="Device Prototype">
+        </div>
+        <div class="gallery-item">
+            <img src="img/arduino.png" alt="Internal Components">
+        </div>
+    </div>
+
+    <footer>
+        <div class="project-navigation">
+            <a href="data.html" class="nav-btn" data-key="prev-proj">← Previous Project</a>
+            <a href="gradara.html" class="nav-btn" data-key="next-proj">Next Project →</a>
+        </div>
+        <div class="back-container">
+            <a href="projects.html" class="back-btn" data-key="back-list">Back to Projects</a>
+        </div>
+    </footer>
+
+    <script>
+        const translations = {
+            'it': {
+                'hero-title': 'Rituali Sonori',
+                'hero-subject': 'Esperienze interattive per il Museo Archeologico ed Etnografico di Santarcangelo',
+                'info-year-label': 'Anno',
+                'intro-p': '"Sound Rituals" è un\'installazione interattiva progettata per valorizzare il Museo Archeologico ed Etnografico di Santarcangelo di Romagna attraverso l\'interazione sonora. Il progetto trasforma gli oggetti d\'archivio in elementi narrativi attivi. Ogni reperto selezionato è dotato di un tag che attiva un suono specifico quando viene avvicinato con un dispositivo portatile. Mentre i visitatori si muovono nello spazio, i suoni si sovrappongono e si fondono, creando una composizione collettiva in continua evoluzione.<br><br>Invece di presentare una storia lineare, l\'installazione abbraccia la frammentazione e la stratificazione. Il percorso del visitatore si trasforma in un\'esplorazione sensoriale in cui il suono funge da medium interpretativo, connettendo il patrimonio tangibile con l\'esperienza contemporanea.',
+                'grid-h2-1': 'Concept: Il Disordine Positivo',
+                'grid-p-1': 'Il progetto è stato sviluppato per lo spazio di stoccaggio del MET – Museo degli Usi e Costumi della Gente di Romagna a Santarcangelo. L\'archivio appare denso e non strutturato, dove gli oggetti si accumulano senza un chiaro ordine lineare. Invece di riorganizzare lo spazio, il progetto abbraccia questo apparente disordine come risorsa narrativa.',
+                'grid-h2-2': 'Strategia di Interazione',
+                'grid-p-2': 'Ispirata al concetto di "disordine positivo", l\'installazione attiva gli oggetti senza alterarne la posizione, permettendo ai visitatori di esplorare l\'archivio liberamente e costruire il proprio percorso interpretativo attraverso il suono. Ogni reperto selezionato diventa un catalizzatore attivo di memoria.',
+                'grid-h2-3': 'Come Funziona',
+                'grid-p-3': 'I visitatori ricevono un dispositivo portatile e si muovono nello spazio autonomamente. Avvicinandosi a specifici oggetti taggati, attivano loop sonori associati a utensili, manufatti domestici e mestieri tradizionali. L\'interazione non è lineare: i suoni si sovrappongono progressivamente, generando una composizione in evoluzione — un "rituale sonoro" personale — modellato dai movimenti unici del visitatore.',
+                'grid-h2-4': 'La Tecnologia',
+                'grid-p-4': 'Il sistema si basa sulla tecnologia NFC integrata nei tag degli oggetti. Il dispositivo include un modulo NFC per il riconoscimento, un microcontrollore Arduino per la gestione del suono in tempo reale e un DFPlayer per la riproduzione audio. Un anello LED circolare fornisce un feedback visivo immediato, trasformando la tecnologia in un\'interfaccia intangibile.',
+                'prev-proj': '← Progetto Precedente',
+                'next-proj': 'Prossimo Progetto →',
+                'back-list': 'Torna ai Progetti'
+            },
+            'es': {
+                'hero-title': 'Rituales Sonoros',
+                'hero-subject': 'Experiencias interactivas para el Museo Arqueológico y Etnográfico de Santarcangelo',
+                'info-focus-label': 'Enfoque',
+                'info-year-label': 'Año',
+                'intro-p': '"Rituales Sonoros" es una instalación interactiva diseñada para poner en valor el Museo Arqueológico y Etnográfico de Santarcangelo di Romagna a través de la interacción sonora. El proyecto transforma objetos de archivo en elementos narrativos activos. Cada pieza seleccionada está equipada con una etiqueta que activa un sonido específico cuando se acerca un dispositivo portátil. Mientras los visitantes se mueven por el espacio, los sonidos se superponen y se funden, creando una composición colectiva en constante evolución.',
+                'grid-h2-1': 'Concepto: El Desorden Positivo',
+                'grid-p-1': 'El proyecto fue desarrollado para el espacio de almacenamiento del MET en Santarcangelo. El archivo aparece denso y no estructurado, donde los objetos se acumulan sin un orden lineal claro. En lugar de reorganizar el espacio, el proyecto adopta este desorden aparente como un recurso narrativo.',
+                'grid-h2-2': 'Estrategia de Interacción',
+                'grid-p-2': 'Inspirada en el concepto de "desorden positivo", la instalación activa los objetos sin alterar su posición, permitiendo a los visitantes explorar el archivo libremente y construir su propio camino interpretativo a través del sonido. Cada pieza seleccionada se convierte en un catalizador activo de memoria.',
+                'grid-h2-3': 'Cómo Funciona',
+                'grid-p-3': 'Los visitantes reciben un dispositivo portátil y se mueven por el espacio de forma autónoma. Al acercarse a objetos específicos etiquetados, activan bucles de sonido asociados con herramientas, artefactos domésticos y oficios tradicionales. La interacción no es lineal: los sonidos se superponen progresivamente, generando una composición en evolución — un "ritual sonoro" personal — moldeado por los movimientos únicos del visitante.',
+                'grid-h2-4': 'La Tecnología',
+                'grid-p-4': 'El sistema se basa en la tecnología NFC integrada en las etiquetas de los objetos. El dispositivo incluye un módulo NFC para el reconocimiento, un microcontrolador Arduino para la gestión del sonido en tiempo real y un DFPlayer para la reproducción de audio. Un anillo LED circular proporciona retroalimentación visual inmediata, convirtiendo la tecnología en una interfaz intangible.',
+                'prev-proj': '← Proyecto Anterior',
+                'next-proj': 'Siguiente Proyecto →',
+                'back-list': 'Volver a Proyectos'
+            }
+        };
+
+        const enDefault = {
+            'nav-portfolio': 'PORTFOLIO', 'nav-projects': 'PROJECTS', 'nav-about': 'ABOUT',
+            'hero-title': 'Sound Rituals',
+            'hero-subject': 'Interactive Experiences for the Archaeological & Ethnographic Museum of Santarcangelo',
+            'info-focus-label': 'Focus',
+            'info-year-label': 'Year',
+            'intro-p': '"Sound Rituals" is an interactive installation designed to enhance the Archaeological and Ethnographic Museum of Santarcangelo in Romagna, through sound-based interaction. The project transforms archival objects into active narrative elements. Each selected artifact is equipped with a tag that triggers a specific sound when approached with a portable device. As visitors move through the space, sounds overlap and merge, creating an evolving and collective composition.<br><br>Rather than presenting a linear story, the installation embraces fragmentation and layering. The visitor’s path turns into a sensory exploration in which sound acts as a medium of interpretation, connecting tangible heritage with contemporary experience.',
+            'grid-h2-1': 'Concept: The Positive Disorder',
+            'grid-p-1': 'The project was developed for the storage space of the MET – Museo degli Usi e Costumi della Gente di Romagna in Santarcangelo. The archive appears dense and unstructured, where objects accumulate without a clear linear order. Rather than reorganizing the space, the project embraces this apparent disorder as a narrative resource.',
+            'grid-h2-2': 'Interaction Strategy',
+            'grid-p-2': 'Inspired by the concept of “positive disorder”, the installation activates the objects without altering their position, allowing visitors to explore the archive freely and build their own interpretative path through sound. Each selected artifact becomes an active catalyst for memory.',
+            'grid-h2-3': 'How to use it',
+            'grid-p-3': 'Visitors receive a portable device and move through the space autonomously. By approaching specific tagged objects, they trigger sound loops associated with tools, domestic artifacts, and traditional crafts. The interaction is non-linear: sounds overlap progressively, generating an evolving composition — a personal “sound ritual” — shaped by the visitor’s unique movements.',
+            'grid-h2-4': 'The Technology',
+            'grid-p-4': 'The system is based on NFC technology integrated into object tags. The device includes an NFC module for recognition, an Arduino microcontroller for real-time sound management, and a DFPlayer for audio playback. A circular LED ring provides immediate visual feedback, turning technology into an intangible interface.',
+            'prev-proj': '← Previous Project',
+            'next-proj': 'Next Project →',
+            'back-list': 'Back to Projects'
+        };
+
+        function changeLang(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active-lang');
+                if(btn.innerText.toLowerCase() === lang) btn.classList.add('active-lang');
+            });
+
+            const targetData = (lang === 'en') ? enDefault : translations[lang];
+
+            if (targetData) {
+                document.querySelectorAll('[data-key]').forEach(el => {
+                    const key = el.getAttribute('data-key');
+                    if(targetData[key]) el.innerHTML = targetData[key];
+                });
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            changeLang('it'); 
+        });
+
+        (function() {
+            const hasLoaded = sessionStorage.getItem("isVisited");
+            const loader = document.getElementById("loader");
+            if (hasLoaded) {
+                loader.classList.add("loader-none");
+            }
+        })();
+
+        window.addEventListener("load", () => {
+            const loader = document.getElementById("loader");
+            const hasLoaded = sessionStorage.getItem("isVisited");
+            if (!hasLoaded) {
+                setTimeout(() => { 
+                    loader.classList.add("loader-hidden");
+                    sessionStorage.setItem("isVisited", "true");
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>

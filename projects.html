@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sofia Maggiani</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap');
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: #000;
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            animation: slideInUp 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        /* --- LOADING SCREEN --- */
+        #loader {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #000; z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .loader-none {
+            display: none !important;
+        }
+        .loader-content { position: relative; width: 12vw; min-width: 120px; aspect-ratio: 1/1; }
+        .loader-content img {
+            position: absolute; top: 0; left: 0; width: 100%; height: auto;
+            opacity: 0; animation: oneByOne 2s infinite; 
+        }
+
+        .loader-content img:nth-child(1) { animation-delay: 0s; }
+        .loader-content img:nth-child(2) { animation-delay: 0.33s; }
+        .loader-content img:nth-child(3) { animation-delay: 0.66s; }
+        .loader-content img:nth-child(4) { animation-delay: 1s; }
+        .loader-content img:nth-child(5) { animation-delay: 1.33s; }
+
+        @keyframes oneByOne {
+            0%, 15% { opacity: 1; transform: scale(1); }
+            16%, 100% { opacity: 0; transform: scale(1.05); }
+        }
+
+        .loader-hidden { opacity: 0; pointer-events: none; }
+
+        /* --- ANIMAZIONI --- */
+        @keyframes slideInUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        body.slide-out-up { animation: slideOutUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+        @keyframes slideOutUp {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(-100%); opacity: 0; }
+        }
+
+        body.slide-out-down { animation: slideOutDown 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+        @keyframes slideOutDown {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(100%); opacity: 0; }
+        }
+
+        /* --- NAV BAR --- */
+        nav {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            padding: 40px 50px;
+            position: fixed;
+            top: 0; width: 100%;
+            z-index: 200;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+        }
+
+        .nav-left { justify-self: start; }
+        .nav-center { justify-self: center; }
+        .nav-right { justify-self: end; display: flex; align-items: center; gap: 20px; }
+
+        /* LANGUAGE SWITCHER UI */
+        .lang-switch {
+            display: flex; gap: 8px; font-size: 0.65rem; color: rgba(255, 255, 255, 0.2);
+            margin-right: 15px;
+        }
+        .lang-btn {
+            cursor: pointer; transition: 0.4s;
+            color: rgba(255, 255, 255, 0.3);
+            border: none; background: none;
+            text-transform: uppercase; font-family: 'Inter', sans-serif;
+            letter-spacing: 1px;
+        }
+        .lang-btn:hover { color: #e0e0e0; }
+        .lang-btn.active-lang { color: #00ff66; font-weight: 600; }
+
+        nav a { 
+            text-decoration: none; transition: 0.4s; 
+            color: rgba(255,255,255,0.4); position: relative; padding: 5px 0;
+        }
+
+        nav a.active { color: #e0e0e0; }
+        nav a::after {
+            content: ''; position: absolute; width: 0; height: 1px;
+            bottom: 0; left: 0; background-color: #00ff66; transition: width 0.4s ease;
+        }
+        nav a.active::after, nav a:hover::after { width: 100%; }
+
+        .logo a { color: rgba(255, 255, 255, 0.4); font-weight: 600; letter-spacing: 3px; }
+        .logo a::after { display: none; }
+        nav a:hover { color: #00ff66; }
+
+        /* --- BACK TO HOME --- */
+        .back-home {
+            position: fixed; bottom: 40px; right: 50px; z-index: 200;
+            text-transform: uppercase; font-size: 0.7rem; letter-spacing: 1.5px;
+        }
+        .back-home a {
+            color: rgba(255, 255, 255, 0.4); text-decoration: none; transition: 0.4s;
+            position: relative; padding-bottom: 8px;
+        }
+        .back-home a::after {
+            content: ''; position: absolute; width: 0; height: 1px;
+            bottom: 0; left: 0; background-color: #00ff66; transition: 0.4s;
+        }
+        .back-home a:hover { color: #00ff66; }
+        .back-home a:hover::after { width: 100%; }
+
+        /* --- PROJECTS LIST --- */
+        .projects-container {
+            height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+        }
+
+        .project-item {
+            text-decoration: none; color: #e0e0e0;
+            font-size: 1.8vw; font-weight: 600; text-transform: uppercase;
+            margin: 20px 0; transition: all 0.4s ease;
+            letter-spacing: 1px; display: block; position: relative;
+        }
+
+        .hover-img {
+            position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.5); 
+            width: 300px; height: auto; object-fit: contain;
+            z-index: -1; opacity: 0; pointer-events: none;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            filter: brightness(0.5);
+        }
+
+        .project-item:hover .hover-img { opacity: 5; transform: translate(-50%, -50%) scale(1); }
+        .project-item:hover { color: #00ff66; letter-spacing: 3px; }
+
+        @media (max-width: 768px) { 
+            nav { padding: 30px 25px; grid-template-columns: 1fr 1fr; }
+            .nav-center { grid-column: span 2; order: 3; margin-top: 15px; }
+            .project-item { font-size: 6vw; }
+            .back-home { bottom: 25px; right: 25px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="loader">
+        <div class="loader-content">
+            <img src="img/newforma4.png" alt=""><img src="img/newforma1.png" alt=""><img src="img/newforma2.png" alt=""><img src="img/newforma3.png" alt=""><img src="img/newforma5-1.png" alt="">
+        </div>
+    </div>
+
+    <nav>
+        <div class="nav-left logo">
+            <a href="index.html" class="back-transition" data-key="nav-portfolio">PORTFOLIO</a>
+        </div>
+        <div class="nav-center">
+            <a href="projects.html" class="nav-transition active" data-key="nav-projects">PROJECTS</a>
+        </div>
+        <div class="nav-right">
+            <div class="lang-switch">
+                <button class="lang-btn active-lang" onclick="changeLang('it')">IT</button>
+                <span>/</span>
+                <button class="lang-btn" onclick="changeLang('en')">EN</button>
+                <span>/</span>
+                <button class="lang-btn" onclick="changeLang('es')">ES</button>
+            </div>
+            <a href="cv.html" class="nav-transition" data-key="nav-about">ABOUT</a>
+        </div>
+    </nav>
+
+    <main class="projects-container">
+        <a href="data.html" class="project-item nav-transition" data-key="proj-data">
+            <img class="hover-img" src="img/newforma3.png">
+            From Stories to Data 
+        </a>
+
+        <a href="rituali.html" class="project-item nav-transition" data-key="proj-rituals">
+            <img class="hover-img" src="img/newforma2.png">
+            Sound Rituals 
+        </a>
+        
+        <a href="gradara.html" class="project-item nav-transition" id="dynamic-trigger" data-key="proj-gradara">
+            <img id="bg4" class="hover-img" src="img/newforma5-1.png">
+            Feeling Gradara 
+        </a>
+
+        <a href="associa.html" class="project-item nav-transition" data-key="proj-associa">
+            <img class="hover-img" src="img/newforma4.png">
+            Associamente
+        </a>
+
+        <a href="regia.html" class="project-item nav-transition" data-key="proj-between">
+            <img class="hover-img" src="img/newforma1.png">
+            Between Worlds 
+        </a>
+
+        <div class="project-item" style="cursor: default; opacity: 0.5;" data-key="coming-soon">
+            Coming Soon... 
+        </div>
+    </main>
+
+    <div class="back-home">
+        <a href="index.html" class="back-transition" data-key="back-home">Back to Home</a>
+    </div>
+
+    <script>
+        const translations = {
+            'it': {
+                
+                'back-home': 'Torna alla Home', 
+                'proj-data': '<img class="hover-img" src="img/newforma3.png"> Dalle Storie ai Dati',
+                'proj-rituals': '<img class="hover-img" src="img/newforma2.png"> Rituali Sonori',
+                'proj-gradara': '<img id="bg4" class="hover-img" src="img/newforma5-1.png"> Sentire Gradara',
+                'proj-associa': '<img class="hover-img" src="img/newforma4.png"> Associamente',
+                'proj-between': '<img class="hover-img" src="img/newforma1.png"> Tra Mondi'
+            },
+            'es': {
+               
+                'back-home': 'Volver al inicio',
+                'proj-data': '<img class="hover-img" src="img/newforma3.png"> De Historias a Datos',
+                'proj-rituals': '<img class="hover-img" src="img/newforma2.png"> Rituales Sonoros',
+                'proj-gradara': '<img id="bg4" class="hover-img" src="img/newforma5-1.png"> Sintiendo Gradara',
+                'proj-associa': '<img class="hover-img" src="img/newforma4.png"> Associamente',
+                'proj-between': '<img class="hover-img" src="img/newforma1.png"> Entre Mundos'
+            }
+        };
+
+        const enDefault = {
+        
+            'back-home': 'Back to Home', 
+            'proj-data': '<img class="hover-img" src="img/newforma3.png"> From Stories to Data',
+            'proj-rituals': '<img class="hover-img" src="img/newforma2.png"> Sound Rituals',
+            'proj-gradara': '<img id="bg4" class="hover-img" src="img/newforma5-1.png"> Feeling Gradara',
+            'proj-associa': '<img class="hover-img" src="img/newforma4.png"> Associamente',
+            'proj-between': '<img class="hover-img" src="img/newforma1.png"> Between Worlds'
+        };
+
+        function changeLang(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active-lang');
+                if(btn.innerText.toLowerCase() === lang) btn.classList.add('active-lang');
+            });
+
+            if (lang === 'en') {
+                document.querySelectorAll('[data-key]').forEach(el => {
+                    const key = el.getAttribute('data-key');
+                    if(enDefault[key]) el.innerHTML = enDefault[key];
+                });
+            } else {
+                document.querySelectorAll('[data-key]').forEach(el => {
+                    const key = el.getAttribute('data-key');
+                    if(translations[lang] && translations[lang][key]) el.innerHTML = translations[lang][key];
+                });
+            }
+            
+            const newImgElement = document.getElementById('bg4');
+            const trigger = document.getElementById('dynamic-trigger');
+            if(trigger && newImgElement) {
+                trigger.addEventListener('mouseenter', () => {
+                    const immaginiForme = ['img/newforma5-2.png', 'img/newforma5-3.png', 'img/newforma5-4.png', 'img/newforma5-5.png', 'img/newforma5-1.png'];
+                    const randomIndex = Math.floor(Math.random() * immaginiForme.length);
+                    newImgElement.src = immaginiForme[randomIndex];
+                });
+            }
+        }
+
+        // Forza l'italiano all'avvio
+        document.addEventListener("DOMContentLoaded", () => {
+            changeLang('it'); 
+        });
+
+       // Esegui questo controllo IMMEDIATAMENTE, prima ancora del caricamento completo
+        (function() {
+            const hasLoaded = sessionStorage.getItem("isVisited");
+            const loader = document.getElementById("loader");
+
+            if (hasLoaded) {
+                // Se l'utente ha già visto il loader in questa sessione, lo eliminiamo subito
+                loader.classList.add("loader-none");
+            }
+        })();
+
+        window.addEventListener("load", () => {
+            const loader = document.getElementById("loader");
+            const hasLoaded = sessionStorage.getItem("isVisited");
+
+            if (!hasLoaded) {
+                // Se è la prima volta, facciamo l'animazione classica
+                setTimeout(() => { 
+                    loader.classList.add("loader-hidden");
+                    // Salviamo nel sessionStorage che il loader è stato mostrato
+                    sessionStorage.setItem("isVisited", "true");
+                }, 2000);
+            }
+        });
+
+        // Logica forme casuali Gradara
+        const immaginiForme = ['img/newforma5-2.png', 'img/newforma5-3.png', 'img/newforma5-4.png', 'img/newforma5-5.png', 'img/newforma5-1.png'];
+        const trigger = document.getElementById('dynamic-trigger');
+        if(trigger) {
+            trigger.addEventListener('mouseenter', () => {
+                const imgElement = document.getElementById('bg4');
+                if(imgElement) {
+                    const randomIndex = Math.floor(Math.random() * immaginiForme.length);
+                    imgElement.src = immaginiForme[randomIndex];
+                }
+            });
+        }
+
+        // Transizioni
+        document.querySelectorAll('.nav-transition').forEach(link => {
+            link.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href && href !== '#' && href !== 'projects.html') {
+                    e.preventDefault();
+                    document.body.classList.add('slide-out-up');
+                    setTimeout(() => { window.location.href = href; }, 500);
+                }
+            });
+        });
+
+        document.querySelectorAll('.back-transition').forEach(link => {
+            link.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href && href !== '#') {
+                    e.preventDefault();
+                    document.body.classList.add('slide-out-down');
+                    setTimeout(() => { window.location.href = href; }, 500);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

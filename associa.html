@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sofia Maggiani - Associamente</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap');
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: #000;
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- LOADING SCREEN --- */
+        #loader {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-color: #000;
+            z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .loader-none { display: none !important; }
+        .loader-content { position: relative; width: 12vw; min-width: 120px; aspect-ratio: 1/1; }
+        .loader-content img {
+            position: absolute; top: 0; left: 0; width: 100%; height: auto;
+            opacity: 0; animation: oneByOne 2s infinite; 
+        }
+        .loader-content img:nth-child(1) { animation-delay: 0s; }
+        .loader-content img:nth-child(2) { animation-delay: 0.33s; }
+        .loader-content img:nth-child(3) { animation-delay: 0.66s; }
+        .loader-content img:nth-child(4) { animation-delay: 1s; }
+        .loader-content img:nth-child(5) { animation-delay: 1.33s; }
+
+        @keyframes oneByOne {
+            0%, 15% { opacity: 1; transform: scale(1); }
+            16%, 100% { opacity: 0; transform: scale(1.05); }
+        }
+        .loader-hidden { opacity: 0; pointer-events: none; }
+
+         /* --- NAV BAR --- */
+        nav {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            padding: 40px 50px;
+            position: fixed;
+            top: 0; width: 100%;
+            z-index: 200;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            background-color: rgba(0, 0, 0, 0.85); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-left { justify-self: start; }
+        .nav-center { justify-self: center; }
+        .nav-right { justify-self: end; display: flex; gap: 20px; align-items: center; }
+
+        nav a { 
+            text-decoration: none; 
+            transition: 0.4s; 
+            color: rgba(255,255,255,0.4); 
+            position: relative; 
+            padding: 5px 0; 
+            font-weight: 400;
+        }
+
+        /* Stato attivo per far apparire la linea verde fissa */
+        nav a.active-link { 
+            color: #e0e0e0; 
+            font-weight: 600; 
+        }
+
+        nav a::after {
+            content: ''; 
+            position: absolute; 
+            width: 0; 
+            height: 1px;
+            bottom: 0; 
+            left: 0; 
+            background-color: #00ff66; 
+            transition: width 0.4s ease;
+        }
+
+        /* La linea si espande se il link è active o se ci passi sopra col mouse */
+        nav a.active-link::after, 
+        nav a:hover::after { 
+            width: 100%; 
+        }
+
+        .logo a { 
+            color: rgba(255, 255, 255, 0.4); 
+            font-weight: 600; 
+            letter-spacing: 3px; 
+        }
+
+
+
+        /* --- LANGUAGE SWITCHER --- */
+         .lang-switch {
+            display: flex; gap: 8px; font-size: 0.65rem; color: rgba(255, 255, 255, 0.2);
+        }
+        .lang-btn {
+            cursor: pointer; transition: 0.4s;
+            color: rgba(255, 255, 255, 0.3);
+            border: none; background: none;
+            text-transform: uppercase; font-family: 'Inter', sans-serif;
+            letter-spacing: 1px;
+        }
+        .lang-btn:hover { color: #e0e0e0; }
+        .lang-btn.active-lang { color: #00ff66; font-weight: 600; }
+
+        /* --- HEADER PROGETTO --- */
+        .project-hero {
+            height: 90vh; 
+            display: flex; flex-direction: column; justify-content: flex-end;
+            padding: 120px 50px 50px 50px;
+            max-width: 1400px; margin: 0 auto;
+        }
+        .hero-illustration { width: 150px; height: auto; margin-bottom: 30px; opacity: 0.9; }
+        h1 { font-size: 5.5vw; font-weight: 900; text-transform: uppercase; line-height: 0.9; letter-spacing: 3px; margin-bottom: 10px; color: #e0e0e0; }
+        .project-subject { font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.6); margin-bottom: 50px; font-weight: 300; }
+        .project-info {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px;
+            border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;
+            text-transform: uppercase; font-size: 0.7rem; letter-spacing: 1.5px;
+        }
+        .info-block span { display: block; color: rgba(255,255,255,0.4); margin-bottom: 5px; font-weight: 600; }
+
+        /* --- SEZIONI TESTO --- */
+        .content-grid {
+            max-width: 1400px; margin: 80px auto; padding: 0 50px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+        }
+        .content-grid h2 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: #e0e0e0; margin-bottom: 20px; }
+        .content-grid p { font-size: 1rem; font-weight: 300; color: rgba(255,255,255,0.6); }
+        .intro-text { max-width: 1400px; margin: 80px auto; padding: 0 50px; }
+        .intro-text p { max-width: 900px; font-size: 1.1rem; font-weight: 300; color: rgba(255,255,255,0.7); }
+
+        
+        /* --- GALLERY --- */
+        .project-gallery { 
+            display: flex; 
+            gap: 40px; 
+            padding: 0 50px; 
+            max-width: 1400px; 
+            margin: 0 auto 80px; 
+        }
+
+        .gallery-item { 
+            flex: 1; 
+            overflow: hidden; 
+            aspect-ratio: 3 / 2; 
+            position: relative; 
+            background: #111; 
+        }
+
+        .gallery-item img, .gallery-item iframe { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            display: block; 
+            border: none; 
+        }
+
+        /* Video: rimane com'era (centrato) */
+        .gallery-item iframe { 
+            transform: scale(1.8); 
+            transform-origin: center; 
+        }
+
+        /* Immagini: focus verso il basso */
+        .gallery-item img { 
+            object-fit: cover; 
+            object-position: center bottom; /* Sposta l'inquadratura verso il basso */
+            transition: 0.8s ease; 
+        }
+
+        /* --- FOOTER --- */
+        footer { padding: 50px 50px 100px 50px; max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
+        .project-navigation { display: flex; justify-content: space-between; width: 100%; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 40px; }
+        .back-container { display: flex; justify-content: flex-end; width: 100%; }
+        .nav-btn, .back-btn { position: relative; text-decoration: none; color: rgba(255,255,255,0.6); text-transform: uppercase; font-size: 0.7rem; letter-spacing: 2px; padding-bottom: 8px; transition: 0.4s; }
+        .nav-btn::after, .back-btn::after { content: ''; position: absolute; width: 0; height: 1px; bottom: 0; left: 0; background-color: #00ff66; transition: 0.4s; }
+        .nav-btn:hover, .back-btn:hover { color: #00ff66; }
+        .nav-btn:hover::after, .back-btn:hover::after { width: 100%; }
+
+        @media (max-width: 768px) {
+            nav { padding: 30px 25px; grid-template-columns: 1fr 1fr; }
+            .nav-center { grid-column: span 2; order: 3; margin-top: 15px; }
+            h1 { font-size: 10vw; }
+            .content-grid { grid-template-columns: 1fr; gap: 40px; }
+            .project-gallery { flex-direction: column; gap: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="loader-content">
+            <img src="img/newforma4.png" alt="">
+            <img src="img/newforma1.png" alt="">
+            <img src="img/newforma2.png" alt="">
+            <img src="img/newforma3.png" alt="">
+            <img src="img/newforma5-1.png" alt="">
+        </div>
+    </div>
+
+    <nav>
+        <div class="nav-left logo"><a href="index.html">PORTFOLIO</a></div>
+        <div class="nav-center"><a href="projects.html" class="active-link" data-key="nav_projects">PROJECTS</a></div>
+        <div class="nav-right">
+            <div class="lang-switch">
+                <button id="btn-it" class="lang-btn" onclick="changeLang('it')">IT</button>
+                <span>/</span>
+                <button id="btn-en" class="lang-btn" onclick="changeLang('en')">EN</button>
+                <span>/</span>
+                <button id="btn-es" class="lang-btn" onclick="changeLang('es')">ES</button>
+            </div>
+            <a href="cv.html" data-key="nav_about">ABOUT</a>
+        </div>
+    </nav>
+
+    <header class="project-hero">
+        <img src="img/newforma4.png" alt="Illustration" class="hero-illustration">
+        <h1>Associamente</h1>
+        <div class="project-subject" data-key="hero_subject">Gioco Collaborativo per la Memoria e la Stimolazione Cognitiva</div>
+        <div class="project-info">
+            <div class="info-block">
+                <span data-key="info_focus_label">Focus</span>
+                <p data-key="info_focus_text">Interaction Design - Product Design <br> Inclusive Design - Physical Computing</p>
+            </div>
+            <div class="info-block">
+                <span data-key="info_year_label">Anno</span>
+                2025
+            </div>
+        </div>
+    </header>
+
+    <section class="intro-text">
+        <p data-key="intro_p"></p>
+    </section>
+
+    <section class="content-grid">
+        <div>
+            <h2 data-key="concept_title"></h2>
+            <p data-key="concept_p"></p>
+        </div>
+        <div>
+            <h2 data-key="dynamics_title"></h2>
+            <p data-key="dynamics_p"></p>
+        </div>
+    </section>
+
+    <div class="project-gallery">
+        <div class="gallery-item"><img src="img/aperto.jpg" alt="Detail 1"></div>
+        <div class="gallery-item"><img src="img/gioco2.jpg" alt="Detail 2"></div>
+    </div>
+
+    <section class="content-grid">
+        <div>
+            <h2 data-key="tech_title"></h2>
+            <p data-key="tech_p"></p>
+        </div>
+        <div>
+            <h2 data-key="design_title"></h2>
+            <p data-key="design_p"></p>
+        </div>
+    </section>
+
+    <div class="project-gallery">
+        <div class="gallery-item">
+            <iframe title="vimeo-player" src="https://player.vimeo.com/video/1166968056?h=c4eb005732&autoplay=1&muted=1&loop=1&background=1" allow="autoplay; fullscreen" allowfullscreen></iframe>
+        </div>
+        <div class="gallery-item"><img src="img/gioco.jpg" alt="Detail 3"></div>
+    </div>
+
+    <footer>
+        <div class="project-navigation">
+            <a href="gradara.html" class="nav-btn" data-key="footer_prev"></a>
+            <a href="regia.html" class="nav-btn" data-key="footer_next"></a>
+        </div>
+        <div class="back-container">
+            <a href="projects.html" class="back-btn" data-key="footer_back"></a>
+        </div>
+    </footer>
+
+    <script>
+        const translations = {
+            en: {
+                
+                hero_subject: "Collaborative Game for Memory and Cognitive Stimulation",
+                info_focus_label: "Focus",
+                info_focus_text: "Interaction Design - Product Design <br> Inclusive Design - Physical Computing",
+                info_year_label: "Year",
+                intro_p: "ASSOCIAMENTE is an interactive card game designed to stimulate residual memory in the early stages of Alzheimer’s. Moving beyond a medicalized approach, the project focuses on 'relational care' by linking everyday objects to familiar places. Developed through direct dialogue with caregivers and professionals, it transforms cognitive stimulation into a positive narrative experience, fostering deep connections through the power of play.",
+                concept_title: "Concept & Social Impact",
+                concept_p: "AssociaMente is a collaborative board game designed for memory activation and cognitive stimulation, with a specific focus on elderly users. The project’s goal transcends simple mental exercise; it aims to foster social interaction and emotional engagement through shared play. By transforming stimulation into a ludic activity, the system reduces the stigma of therapy and promotes relational well-being.",
+                dynamics_title: "Cooperative Dynamics",
+                dynamics_p: "The game structure prioritizes cooperative dynamics over competition. Players are invited to connect everyday objects with familiar places, activating recognition processes and the recall of personal memories. Rather than testing performance, the system supports dialogue and shared storytelling, encouraging a deep exchange between participants, caregivers, and family members.",
+                tech_title: "Interactive Technology",
+                tech_p: "The physical system consists of a wooden board equipped with RFID technology and an integrated light-feedback mechanism. Each card contains a tag that is instantly recognized when placed on the base. Through intuitive and non-intrusive light signals, the device guides the user in validating associations, reducing performance anxiety and reinforcing engagement through a multisensory response.",
+                design_title: "Design & Accessibility",
+                design_p: "The visual language of the cards is inspired by the iconographic tradition of classic playing cards, using familiar shapes and clear symbols to ensure maximum accessibility. Although the game comes with structured instructions, the flexible design allows for open and free use, easily adapting to different levels of ability and the specific cognitive conditions of each user.",
+                footer_prev: "← Previous Project",
+                footer_next: "Next Project →",
+                footer_back: "Back to Projects"
+            },
+            it: {
+               
+                hero_subject: "Gioco Collaborativo per la Memoria e la Stimolazione Cognitiva",
+                info_focus_label: "Focus",
+                info_focus_text: "Interaction Design - Product Design <br> Inclusive Design - Physical Computing",
+                info_year_label: "Anno",
+                intro_p: "ASSOCIAMENTE è un gioco di carte interattivo progettato per stimolare la memoria residua nelle prime fasi dell’Alzheimer. Superando l’approccio medicalizzato, il progetto si concentra sulla 'cura relazionale' collegando oggetti quotidiani a luoghi familiari. Sviluppato attraverso il dialogo diretto con caregiver e professionisti, trasforma la stimolazione cognitiva in un'esperienza narrativa positiva.",
+                concept_title: "Concept & Impatto Sociale",
+                concept_p: "AssociaMente è un gioco da tavolo collaborativo pensato per l'attivazione della memoria e la stimolazione cognitiva, con un focus specifico sull'utente anziano. L'obiettivo del progetto va oltre il semplice esercizio mentale; mira a favorire l'interazione sociale e il coinvolgimento emotivo attraverso il gioco condiviso.",
+                dynamics_title: "Dinamiche Cooperative",
+                dynamics_p: "La struttura del gioco privilegia le dinamiche cooperative rispetto alla competizione. I giocatori sono invitati a collegare oggetti quotidiani con luoghi familiari, attivando processi di riconoscimento e il richiamo di ricordi personali. Il sistema supporta il dialogo e la narrazione condivisa tra partecipanti e caregiver.",
+                tech_title: "Tecnologia Interattiva",
+                tech_p: "Il sistema fisico consiste in una plancia di legno dotata di tecnologia RFID e un meccanismo di feedback luminoso integrato. Ogni carta contiene un tag che viene riconosciuto istantaneamente. Attraverso segnali luminosi intuitivi, il dispositivo guida l'utente nella convalida delle associazioni.",
+                design_title: "Design & Accessibilità",
+                design_p: "Il linguaggio visivo delle carte si ispira alla tradizione iconografica delle carte da gioco classiche, garantendo la massima accessibilità. Il design flessibile consente un uso aperto e libero, adattandosi facilmente ai diversi livelli di abilità e alle condizioni cognitive di ogni utente.",
+                footer_prev: "← Progetto Precedente",
+                footer_next: "Progetto Successivo →",
+                footer_back: "Torna ai Progetti"
+            },
+            es: {
+              
+                hero_subject: "Juego Colaborativo para la Memoria y Estimulación Cognitiva",
+                info_focus_label: "Enfoque",
+                info_focus_text: "Diseño de Interacción - Diseño de Producto <br> Diseño Inclusivo - Computación Física",
+                info_year_label: "Año",
+                intro_p: "ASSOCIAMENTE es un juego de cartas interactivo diseñado para estimular la memoria residual en las etapas tempranas del Alzheimer. Superando el enfoque medicalizado, il proyecto se centra en el 'cuidado relacional' vinculando objetos cotidianos con lugares familiares. Desarrollado a través del diálogo directo con cuidadores y profesionales, transforma la estimulación cognitiva en una experiencia narrativa positiva.",
+                concept_title: "Concepto e Impacto Social",
+                concept_p: "AssociaMente es un juego de mesa colaborativo diseñado para la activación de la memoria y la estimulación cognitiva, con un enfoque específico en usuarios de la tercera edad. El objetivo del proyecto trasciende el simple ejercicio mental; busca fomentar la interacción social y el compromiso emocional a través del juego compartido.",
+                dynamics_title: "Dinámicas Cooperativas",
+                dynamics_p: "La estructura del juego prioriza las dinámicas cooperativas sobre la competencia. Se invita a los jugadores a conectar objetos cotidianos con lugares familiares, activando procesos de reconocimiento y el recuerdo de memorias personales. El sistema apoya el diálogo y la narración compartida entre participantes y cuidadores.",
+                tech_title: "Tecnología Interactiva",
+                tech_p: "El sistema físico consiste en un tablero de madera equipado con tecnología RFID y un mecanismo de feedback luminoso integrado. Cada tarjeta contiene un tag que se reconoce al instante. A través de señales luminosas intuitivas, el dispositivo guía al usuario en la validación de las asociaciones.",
+                design_title: "Diseño y Accesibilidad",
+                design_p: "El lenguaje visual de las tarjetas se inspira en la tradición iconográfica de las cartas de juego clásicas, garantizando la máxima accesibilidad. El diseño flexible permite un uso abierto y libre, adaptándose fácilmente a los diferentes niveles de habilidad y condiciones cognitivas de cada usuario.",
+                footer_prev: "← Proyecto Anterior",
+                footer_next: "Siguiente Proyecto →",
+                footer_back: "Volver a Proyectos"
+            }
+        };
+
+        function changeLang(lang) {
+            document.querySelectorAll('[data-key]').forEach(element => {
+                const key = element.getAttribute('data-key');
+                if (translations[lang] && translations[lang][key]) {
+                    element.innerHTML = translations[lang][key]; // innerHTML per gestire i <br>
+                }
+            });
+
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active-lang'));
+            const activeBtn = document.getElementById(`btn-${lang}`);
+            if (activeBtn) activeBtn.classList.add('active-lang');
+            
+            localStorage.setItem("selectedLang", lang);
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            const savedLang = localStorage.getItem("selectedLang") || 'it';
+            changeLang(savedLang);
+
+            const hasLoaded = sessionStorage.getItem("isVisited");
+            const loader = document.getElementById("loader");
+
+            if (hasLoaded) {
+                loader.classList.add("loader-none");
+            } else {
+                window.addEventListener("load", () => {
+                    setTimeout(() => { 
+                        loader.classList.add("loader-hidden");
+                        sessionStorage.setItem("isVisited", "true");
+                    }, 2000);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
