@@ -329,29 +329,6 @@
                 }
             });
         }
-
-        // Transizioni
-        document.querySelectorAll('.nav-transition').forEach(link => {
-            link.addEventListener('click', function(e) {
-                const href = this.getAttribute('href');
-                if (href && href !== '#' && href !== 'projects.html') {
-                    e.preventDefault();
-                    document.body.classList.add('slide-out-up');
-                    setTimeout(() => { window.location.href = href; }, 500);
-                }
-            });
-        });
-
-        document.querySelectorAll('.back-transition').forEach(link => {
-            link.addEventListener('click', function(e) {
-                const href = this.getAttribute('href');
-                if (href && href !== '#') {
-                    e.preventDefault();
-                    document.body.classList.add('slide-out-down');
-                    setTimeout(() => { window.location.href = href; }, 500);
-                }
-            });
-        });
     </script>
 </body>
 </html>
