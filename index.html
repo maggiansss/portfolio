@@ -205,20 +205,67 @@
         }
         .stats-value a:hover { color: #00ff66; }
 
+        /* --- RESPONSIVE FIX --- */
         @media (max-width: 768px) {
-            nav { padding: 30px 25px; grid-template-columns: 1fr 1fr; }
-            .nav-center { grid-column: span 2; order: 3; margin-top: 15px; }
-            .hero-title { 
-                font-size: 12vw; 
-                font-weight: 300;
-                letter-spacing: 0.02em;
+            body { overflow: hidden; }
+            /* Header su una riga sola */
+            nav { 
+                padding: 20px 25px; 
+                grid-template-columns: 1fr auto 1fr;
+                font-size: 0.65rem; 
             }
+            /* Titolo centrale proporzionato */
+            .hero-title { 
+                font-size: 11vw; 
+                gap: 4vw;
+                font-weight: 300;
+            }
+            /* Footer ancorato e leggibile */
             .hero-footer { 
-                grid-template-columns: 1fr; 
-                position: relative; 
-                padding: 50px; 
-                margin-top: 100vh; 
-                bottom: auto;
+                position: fixed; 
+                bottom: 25px;
+                left: 25px;
+                width: calc(100% - 50px);
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 0;
+                z-index: 100;
+            }
+            .welcome-box { 
+                max-width: 100%; 
+                margin-bottom: 20px;
+            }
+            #desc-text {
+                font-size: 0.75rem;
+                line-height: 1.4;
+                min-height: auto;
+            }
+            /* Correzione Tabellina Stats */
+            .stats-col { 
+                width: 100%;
+                display: block;
+                font-size: 0.65rem;
+            }
+            .stats-col div {
+                margin-bottom: 10px;
+                display: flex;
+                flex-direction: column; /* Etichetta sopra, valore sotto per chiarezza mobile */
+                border-bottom: 1px solid #222; /* Linea sottile per dividere le righe */
+                padding-bottom: 5px;
+            }
+            .stats-label {
+                font-size: 0.55rem;
+                margin-bottom: 2px;
+                color: #666;
+            }
+            .stats-value {
+                border-bottom: none;
+                padding-bottom: 0;
+                color: #e0e0e0;
+            }
+            .stats-value a {
+                margin-right: 15px;
             }
         }
     </style>
