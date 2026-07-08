@@ -77,7 +77,7 @@
             top: 0; width: 100%;
             z-index: 200;
             text-transform: uppercase;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             letter-spacing: 1.5px;
             background-color: rgba(0, 0, 0, 0.85); 
             backdrop-filter: blur(12px);
@@ -87,7 +87,7 @@
 
         .nav-left { justify-self: start; }
         .nav-center { justify-self: center; }
-        .nav-right { justify-self: end; display: flex; gap: 30px; align-items: center; }
+        .nav-right { justify-self: end; display: flex; gap: 20px; align-items: center; }
 
         nav a { 
             text-decoration: none; 
@@ -124,7 +124,7 @@
         .logo a { 
             color: rgba(255, 255, 255, 0.4); 
             font-weight: 600; 
-            
+            letter-spacing: 3px; 
         }
         .lang-btn:hover { color: #e0e0e0; }
 
@@ -230,7 +230,7 @@
             width: 40%; 
             aspect-ratio: 4/3; 
             overflow: hidden; 
-           
+            background: #111; 
         }
 
         .gallery-item img { 
@@ -298,76 +298,25 @@
         .nav-btn:hover::after, .back-btn:hover::after { width: 100%; }
 
         @media (max-width: 768px) {
-            h1 { font-size: 9vw; }
+            nav { padding: 30px 25px; grid-template-columns: 1fr 1fr; }
+            .nav-center { grid-column: span 2; order: 3; margin-top: 15px; }
+            h1 { font-size: 10vw; }
             .content-grid { grid-template-columns: 1fr; gap: 40px; }
             .project-gallery { flex-direction: column; gap: 40px; }
             .gallery-item { width: 100%; }
-            .project-item { font-size: 6vw; }
-            nav { 
-                padding: 20px 25px; 
-                grid-template-columns: 1fr auto 1fr; 
-                align-items: flex-start; 
-            }
-            .logo { justify-self: start; }
-            .nav-center { 
-                justify-self: center;
-                grid-column: auto; 
-                margin-top: 0; 
-            }
-            /* Blocco About + Lingue */
-            .nav-right { 
-                justify-self: end;
-                display: flex;
-                flex-direction: column; 
-                gap: 5px; 
-                align-items: flex-end; /* Allinea il contenuto al bordo destro */
-                text-align: right;
-            }
-            .nav-right a {
-                order: 1;
-                padding: 0;
-                margin: 0;
-            }
-            .lang-switch {
-                order: 2;
-                display: flex;
-                gap: 4px;
-                font-size: 0.55rem;
-                margin: 0; 
-                padding: 0;
-                /* Rimuove eventuali spazi vuoti tra i bottoni */
-                justify-content: flex-end; 
-            }
-
-            .lang-switch .lang-btn {
-                padding: 0; /* Rimuove lo spazio interno ai bottoni che li sposta */
-                margin: 0;
-                min-width: auto;
-            }
-            /* --- Resto del layout About --- */
-            .container { padding: 140px 25px 50px 25px; }        
-            .row { 
-                flex-direction: column; 
-                gap: 15px; 
-                padding: 30px 0;
-            } 
-            .back-home {
-                right: 25px;
-                bottom: 30px;
-                font-size: 0.6rem;
-            }
         }
     </style>
 </head>
 <body>
 
-    <div id="loader">
+        <div id="loader">
         <div class="loader-content">
             <img src="img/newforma4.png" alt="">
             <img src="img/newforma1.png" alt="">
             <img src="img/newforma2.png" alt="">
             <img src="img/newforma3.png" alt="">
             <img src="img/newforma5-1.png" alt="">
+            <img src="img/buco.png" alt="">
         </div>
     </div>
 
@@ -472,7 +421,7 @@
             'it': {
                
                 'hero-title': 'Dalle Storie ai Dati',
-                'hero-subject': 'Il Caso Studio di "Terra di Tutti"',
+                'hero-subject': 'Il Caso Studio di Terra di Tutti',
                 'info-year-label': 'Anno',
                 'intro-p': '"Terra di Tutti", con sede a Capannori (Lucca), è un\'impresa sociale che unisce produzione a responsabilità ambientale e sociale. Dietro le sue attività si cela una complessa rete di dati — storia, processi, impatto e valori — spesso difficile da comunicare con chiarezza. Questa tesi esplora come la Data Visualization possa tradurre tale complessità in narrazioni visive accessibili e significative.<br><br>Attraverso l\'analisi di dati sia quantitativi che qualitativi, il progetto trasforma numeri e informazioni in un sistema visivo coerente, capace di rivelare l\'impatto e rendere visibili i valori dell\'organizzazione.',
                 'grid-h2-1': 'Ricerca & Concept',
@@ -491,7 +440,7 @@
             'es': {
                 
                 'hero-title': 'De Historias a Datos',
-                'hero-subject': 'El Caso de Estudio de "Terra di Tutti" ("Tierra de Todos")',
+                'hero-subject': 'El Caso de Estudio de Terra di Tutti',
                 'info-focus-label': 'Enfoque',
                 'info-focus-content': 'Visualización de Datos - Diseño Sostenible - Diseño Social',
                 'info-year-label': 'Año',
@@ -499,7 +448,7 @@
                 'grid-h2-1': 'Investigación & Concepto',
                 'grid-p-1': 'El proyecto desarrolla una investigación sistémica sobre "Terra di Tutti", estructurada en torno a dos dimensiones fundamentales — Personas y Cosas — que generan y sostienen la vida de la organización. A través del mapeo y el análisis de datos, la investigación explora cómo el reutilizo de materiales y las relaciones humanas se entrelazan para producir impacto.',
                 'grid-h2-2': 'Estrategia de Datos',
-                'grid-p-2': 'Implementé una monitorización cuantitativa directa para los materiales y diseñé un sistema de investigación compartida para más de 80 personas registradas. Los datos recopilados fueron reorganizados en clusters temáticos y traducidos en visualizaciones experimentales, pasando de la información cruda a sistemas visuales estructurados.',
+                'grid-p-2': 'Implementé un monitoreo cuantitativo directo para los materiales y diseñé un sistema de investigación compartida para más de 80 personas registradas. Los datos recopilados fueron reorganizados en clusters temáticos y traducidos en visualizaciones experimentales, pasando de la información cruda a sistemas visuales estructurados.',
                 'grid-h2-3': 'Datos Usables',
                 'grid-p-3': 'La visualización se tradujo en un formato usable: delantales de denim reciclado con fragmentos de datos impresos en la tela. Producidos manualmente mediante impresión en relieve (woodblock printing), cada pieza es única, transformando el dato en un objeto táctil y narrativo.',
                 'grid-h2-4': 'Conexión Digital',
@@ -514,7 +463,7 @@
         const enDefault = {
            
             'hero-title': 'From Stories to Data',
-            'hero-subject': 'The Case Study of "Terra di Tutti"("Everyone\'s Land")',
+            'hero-subject': 'The Case Study of Terra di Tutti',
             'info-focus-label': 'Focus',
             'info-focus-content': 'Data Visualization - Sustainability Design - Social Design',
             'info-year-label': 'Year',
