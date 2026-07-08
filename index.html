@@ -73,7 +73,7 @@
             align-items: center;
             padding: 40px 50px;
             position: fixed;
-            top: 0; left: 0; width: 100%;
+            width: 100%;
             z-index: 200;
             text-transform: uppercase;
             font-size: 0.75rem;
@@ -95,12 +95,13 @@
             color: rgba(255, 255, 255, 0.4);
             text-decoration: none;
             font-weight: 600; 
+            letter-spacing: 3px;
             transition: color 0.4s ease;
         }
         .logo a:hover { color: #00ff66; }
 
         .nav-center { justify-self: center; }
-        .nav-right { justify-self: end; display: flex; align-items: center; gap: 30px; }
+        .nav-right { justify-self: end; }
 
         nav a { 
             color: rgba(255, 255, 255, 0.6);
@@ -112,6 +113,7 @@
         }
 
         .nav-center a:hover, .nav-right a:hover { color: #00ff66; }
+
         .nav-center a::after, .nav-right a::after {
             content: '';
             position: absolute;
@@ -203,67 +205,20 @@
         }
         .stats-value a:hover { color: #00ff66; }
 
-        /* --- RESPONSIVE FIX --- */
         @media (max-width: 768px) {
-            body { overflow: hidden; }
-            /* Header su una riga sola */
-            nav { 
-                padding: 20px 25px; 
-                grid-template-columns: 1fr auto 1fr; 
-                align-items: flex-start;
-            }
-            /* Titolo centrale proporzionato */
+            nav { padding: 30px 25px; grid-template-columns: 1fr 1fr; }
+            .nav-center { grid-column: span 2; order: 3; margin-top: 15px; }
             .hero-title { 
-                font-size: 11vw; 
-                gap: 4vw;
+                font-size: 12vw; 
                 font-weight: 300;
+                letter-spacing: 0.02em;
             }
-            /* Footer ancorato e leggibile */
             .hero-footer { 
-                position: fixed; 
-                bottom: 25px;
-                left: 25px;
-                width: calc(100% - 50px);
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 0;
-                z-index: 100;
-            }
-            .welcome-box { 
-                max-width: 100%; 
-                margin-bottom: 20px;
-            }
-            #desc-text {
-                font-size: 0.75rem;
-                line-height: 1.4;
-                min-height: auto;
-            }
-            /* Correzione Tabellina Stats */
-            .stats-col { 
-                width: 100%;
-                display: block;
-                font-size: 0.65rem;
-            }
-            .stats-col div {
-                margin-bottom: 10px;
-                display: flex;
-                flex-direction: column; /* Etichetta sopra, valore sotto per chiarezza mobile */
-                border-bottom: 1px solid #222; /* Linea sottile per dividere le righe */
-                padding-bottom: 5px;
-            }
-            .stats-label {
-                font-size: 0.55rem;
-                margin-bottom: 2px;
-                color: #666;
-            }
-            .stats-value {
-                border-bottom: none;
-                padding-bottom: 0;
-                color: #e0e0e0;
-            }
-            .stats-value a {
-                margin-right: 15px;
+                grid-template-columns: 1fr; 
+                position: relative; 
+                padding: 50px; 
+                margin-top: 100vh; 
+                bottom: auto;
             }
         }
     </style>
@@ -277,6 +232,7 @@
             <img src="img/newforma2.png" alt="">
             <img src="img/newforma3.png" alt="">
             <img src="img/newforma5-1.png" alt="">
+            <img src="img/buco.png" alt="">
         </div>
     </div>
 
@@ -304,6 +260,7 @@
             <div class="floating-shape" data-depth="0.11" style="top: 55%; left: 78%; width: 19vw;"><img src="img/newforma5-4.png"></div>
             <div class="floating-shape" data-depth="0.13" style="top: 75%; left: 15%; width: 13vw;"><img src="img/newforma5-2.png"></div>
             <div class="floating-shape" data-depth="0.07" style="top: 20%; left: 5%; width: 7vw;"><img src="img/newforma5-1.png"></div>
+            <div class="floating-shape" data-depth="0.04" style="top: 70%; left: 35%; width: 5vw;"><img src="img/buco.png"></div>
         </div>
 
         <div class="hero-title">
@@ -375,7 +332,7 @@
         const texts = {
             it: "Laureata in Industrial Design a Firenze, attualmente iscritta al corso Magistrale in Interaction and Experience Design a San Marino. Esploro percorsi trasversali tra comunicazione, dati e interazione.",
             en: "Graduated in Industrial Design in Florence, currently pursuing a Master's degree in Interaction and Experience Design in San Marino. I explore transversal paths between communication, data, and interaction.",
-            es: "Graduada en Diseño Industrial en Florencia, actualmente cursando un Máster en Diseño de Interacción y Experiencia en San Marino. Exploro caminos trasversales entre comunicacion, datos y interaccion."
+            es: "Graduada en Diseño Industrial en Florencia, actualmente cursando un Máster en Diseño de Interacción y Experiencia en San Marino. Exploro caminos trasversales entre comunicazione, dati e interazione."
         };
 
         function setLang(lang) {
